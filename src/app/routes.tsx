@@ -1,12 +1,22 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { AdminLayout } from './layouts/AdminLayout';
 import { BarberLayout } from './layouts/BarberLayout';
+import { RequireAuth } from './guards/RequireAuth';
+import { RequireOnboarded } from './guards/RequireOnboarded';
+import { PublicOnly } from './guards/PublicOnly';
+import { LoginPage } from '@/features/auth/LoginPage';
+import { RegisterPage } from '@/features/auth/RegisterPage';
+import { ForgotPasswordPage } from '@/features/auth/ForgotPasswordPage';
+import { ResetPasswordPage } from '@/features/auth/ResetPasswordPage';
+import { MagicLinkPage } from '@/features/auth/MagicLinkPage';
+import { AuthCallbackPage } from '@/features/auth/AuthCallbackPage';
+import { OnboardingPage } from '@/features/onboarding/OnboardingPage';
 
 function Placeholder({ title }: { title: string }) {
   return (
     <div>
       <h2 className="text-2xl font-bold">{title}</h2>
-      <p className="mt-1 text-gray-500">Pantalla pendiente — Fase 1.</p>
+      <p className="mt-1 text-gray-500">Pantalla pendiente — fase posterior.</p>
     </div>
   );
 }
@@ -14,9 +24,37 @@ function Placeholder({ title }: { title: string }) {
 export function AppRoutes() {
   return (
     <Routes>
-      <Route path="/login" element={<Placeholder title="Login" />} />
+      {/* Auth routes (públicas, redirigen a /admin si ya hay sesión) */}
+      <Route path="/login" element={<PublicOnly><LoginPage /></PublicOnly>} />
+      <Route path="/register" element={<PublicOnly><RegisterPage /></PublicOnly>} />
+      <Route path="/forgot-password" element={<PublicOnly><ForgotPasswordPage /></PublicOnly>} />
+      <Route path="/magic-link" element={<PublicOnly><MagicLinkPage /></PublicOnly>} />
 
-      <Route path="/admin" element={<AdminLayout />}>
+      {/* Callback Y reset-password necesitan sesión recién creada por Supabase, no PublicOnly */}
+      <Route path="/auth/callback" element={<AuthCallbackPage />} />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
+
+      {/* Onboarding: requiere auth, NO requiere onboarding (es donde se hace) */}
+      <Route
+        path="/onboarding"
+        element={
+          <RequireAuth>
+            <OnboardingPage />
+          </RequireAuth>
+        }
+      />
+
+      {/* Admin: requiere auth + onboarding completo */}
+      <Route
+        path="/admin"
+        element={
+          <RequireAuth>
+            <RequireOnboarded>
+              <AdminLayout />
+            </RequireOnboarded>
+          </RequireAuth>
+        }
+      >
         <Route index element={<Navigate to="hoy" replace />} />
         <Route path="hoy" element={<Placeholder title="Hoy" />} />
         <Route path="agenda" element={<Placeholder title="Agenda" />} />
@@ -28,7 +66,17 @@ export function AppRoutes() {
         <Route path="ajustes" element={<Placeholder title="Ajustes" />} />
       </Route>
 
-      <Route path="/barbero" element={<BarberLayout />}>
+      {/* Barbero: requiere auth + onboarding */}
+      <Route
+        path="/barbero"
+        element={
+          <RequireAuth>
+            <RequireOnboarded>
+              <BarberLayout />
+            </RequireOnboarded>
+          </RequireAuth>
+        }
+      >
         <Route index element={<Navigate to="mi-dia" replace />} />
         <Route path="mi-dia" element={<Placeholder title="Mi día" />} />
         <Route path="comisiones" element={<Placeholder title="Comisiones" />} />
