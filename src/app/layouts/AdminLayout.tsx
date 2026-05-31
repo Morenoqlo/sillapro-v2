@@ -1,6 +1,7 @@
 import { NavLink, Outlet } from 'react-router-dom';
 import { cn } from '@/lib/cn';
 import { Button } from '@/ui/Button';
+import { UserMenu } from '@/ui/UserMenu';
 
 const OPERATION_LINKS = [
   { to: '/admin/hoy', label: 'Hoy' },
@@ -50,13 +51,16 @@ export function AdminLayout() {
       <main className="flex flex-1 flex-col">
         <header className="flex h-14 items-center justify-between border-b border-gray-200 bg-white px-6">
           <h1 className="text-base font-semibold">Admin</h1>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
             <Button variant="primary" size="sm">
               + Cita
             </Button>
             <Button variant="success" size="sm">
               💳 Cobrar
             </Button>
+            <div className="ml-2 border-l border-gray-200 pl-3">
+              <UserMenu />
+            </div>
           </div>
         </header>
         <div className="flex-1 overflow-auto p-6">
