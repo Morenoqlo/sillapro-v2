@@ -11,6 +11,9 @@ import { ResetPasswordPage } from '@/features/auth/ResetPasswordPage';
 import { MagicLinkPage } from '@/features/auth/MagicLinkPage';
 import { AuthCallbackPage } from '@/features/auth/AuthCallbackPage';
 import { OnboardingPage } from '@/features/onboarding/OnboardingPage';
+import { ServiciosPage } from '@/features/servicios/ServiciosPage';
+import { EquipoPage } from '@/features/equipo/EquipoPage';
+import { ClientesPage } from '@/features/clientes/ClientesPage';
 
 function Placeholder({ title }: { title: string }) {
   return (
@@ -58,11 +61,11 @@ export function AppRoutes() {
         <Route index element={<Navigate to="hoy" replace />} />
         <Route path="hoy" element={<Placeholder title="Hoy" />} />
         <Route path="agenda" element={<Placeholder title="Agenda" />} />
-        <Route path="clientes" element={<Placeholder title="Clientes" />} />
+        <Route path="clientes" element={<ClientesPage />} />
         <Route path="caja" element={<Placeholder title="Caja" />} />
         <Route path="reportes" element={<Placeholder title="Reportes" />} />
-        <Route path="servicios" element={<Placeholder title="Servicios" />} />
-        <Route path="equipo" element={<Placeholder title="Equipo" />} />
+        <Route path="servicios" element={<ServiciosPage />} />
+        <Route path="equipo" element={<EquipoPage />} />
         <Route path="ajustes" element={<Placeholder title="Ajustes" />} />
       </Route>
 
