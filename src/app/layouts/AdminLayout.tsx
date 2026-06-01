@@ -3,6 +3,7 @@ import { cn } from '@/lib/cn';
 import { Button } from '@/ui/Button';
 import { UserMenu } from '@/ui/UserMenu';
 import { NewAppointmentProvider, useNewAppointment } from '../NewAppointmentModalContext';
+import { ChargeProvider, useCharge } from '../ChargeModalContext';
 
 const OPERATION_LINKS = [
   { to: '/admin/hoy', label: 'Hoy' },
@@ -27,18 +28,13 @@ function navItemClass({ isActive }: { isActive: boolean }) {
 
 function AdminHeaderActions() {
   const { open } = useNewAppointment();
+  const { openList: openCharge } = useCharge();
   return (
     <div className="flex items-center gap-2">
       <Button variant="primary" size="sm" onClick={() => open()}>
         + Cita
       </Button>
-      <Button
-        variant="success"
-        size="sm"
-        onClick={() => {
-          import('sonner').then(({ toast }) => toast.info('Disponible en Plan 1D (Cobrar)'));
-        }}
-      >
+      <Button variant="success" size="sm" onClick={() => openCharge()}>
         💳 Cobrar
       </Button>
       <div className="ml-2 border-l border-gray-200 pl-3">
@@ -51,38 +47,40 @@ function AdminHeaderActions() {
 export function AdminLayout() {
   return (
     <NewAppointmentProvider>
-      <div className="flex h-full">
-        <aside className="flex w-56 flex-col gap-1 border-r border-gray-200 bg-gray-50 p-4">
-          <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
-            SillaPro
-          </div>
-          <div className="mb-1 mt-3 text-xs font-semibold uppercase tracking-wide text-gray-400">
-            Operación
-          </div>
-          {OPERATION_LINKS.map((link) => (
-            <NavLink key={link.to} to={link.to} className={navItemClass}>
-              {link.label}
-            </NavLink>
-          ))}
-          <div className="mb-1 mt-4 border-t border-gray-200 pt-3 text-xs font-semibold uppercase tracking-wide text-gray-400">
-            Configuración
-          </div>
-          {CONFIG_LINKS.map((link) => (
-            <NavLink key={link.to} to={link.to} className={navItemClass}>
-              {link.label}
-            </NavLink>
-          ))}
-        </aside>
-        <main className="flex flex-1 flex-col">
-          <header className="flex h-14 items-center justify-between border-b border-gray-200 bg-white px-6">
-            <h1 className="text-base font-semibold">Admin</h1>
-            <AdminHeaderActions />
-          </header>
-          <div className="flex-1 overflow-auto p-6">
-            <Outlet />
-          </div>
-        </main>
-      </div>
+      <ChargeProvider>
+        <div className="flex h-full">
+          <aside className="flex w-56 flex-col gap-1 border-r border-gray-200 bg-gray-50 p-4">
+            <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
+              SillaPro
+            </div>
+            <div className="mb-1 mt-3 text-xs font-semibold uppercase tracking-wide text-gray-400">
+              Operación
+            </div>
+            {OPERATION_LINKS.map((link) => (
+              <NavLink key={link.to} to={link.to} className={navItemClass}>
+                {link.label}
+              </NavLink>
+            ))}
+            <div className="mb-1 mt-4 border-t border-gray-200 pt-3 text-xs font-semibold uppercase tracking-wide text-gray-400">
+              Configuración
+            </div>
+            {CONFIG_LINKS.map((link) => (
+              <NavLink key={link.to} to={link.to} className={navItemClass}>
+                {link.label}
+              </NavLink>
+            ))}
+          </aside>
+          <main className="flex flex-1 flex-col">
+            <header className="flex h-14 items-center justify-between border-b border-gray-200 bg-white px-6">
+              <h1 className="text-base font-semibold">Admin</h1>
+              <AdminHeaderActions />
+            </header>
+            <div className="flex-1 overflow-auto p-6">
+              <Outlet />
+            </div>
+          </main>
+        </div>
+      </ChargeProvider>
     </NewAppointmentProvider>
   );
 }

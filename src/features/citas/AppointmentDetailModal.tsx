@@ -7,6 +7,7 @@ import { formatCLP } from '@/lib/money';
 import { formatTime, formatDateLong, parseISOToDate } from '@/lib/dates';
 import { CancelAppointmentModal } from './CancelAppointmentModal';
 import { useAppointmentMutations } from './hooks/useAppointmentMutations';
+import { useCharge } from '@/app/ChargeModalContext';
 import type { AppointmentWithRefs } from './types';
 
 interface AppointmentDetailModalProps {
@@ -21,6 +22,7 @@ export function AppointmentDetailModal({
   onClose,
 }: AppointmentDetailModalProps) {
   const { confirm, markNoShow } = useAppointmentMutations();
+  const { openFor: openCharge } = useCharge();
   const [showCancel, setShowCancel] = useState(false);
 
   const starts = parseISOToDate(appointment.starts_at);
@@ -35,7 +37,7 @@ export function AppointmentDetailModal({
     try {
       await confirm.mutateAsync(appointment.id);
       toast.success('Cita confirmada');
-      onClose(); // cerrar para que la lista refresque (la prop appointment está stale)
+      onClose();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Error');
     }
@@ -124,7 +126,10 @@ export function AppointmentDetailModal({
             type="button"
             variant="success"
             size="sm"
-            onClick={() => toast.info('Disponible en Plan 1D (Cobrar)')}
+            onClick={() => {
+              onClose();
+              openCharge(appointment);
+            }}
           >
             ✓ Marcar + cobrar
           </Button>

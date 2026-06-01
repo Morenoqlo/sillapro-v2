@@ -1,8 +1,8 @@
 import { Card } from '@/ui/Card';
 import { Button } from '@/ui/Button';
-import { toast } from 'sonner';
 import { formatTime, parseISOToDate, minutesBetween } from '@/lib/dates';
 import { formatCLP } from '@/lib/money';
+import { useCharge } from '@/app/ChargeModalContext';
 import type { AppointmentWithRefs } from '@/features/citas/types';
 
 interface NextAppointmentCardProps {
@@ -10,6 +10,8 @@ interface NextAppointmentCardProps {
 }
 
 export function NextAppointmentCard({ appointment }: NextAppointmentCardProps) {
+  const { openFor: openCharge } = useCharge();
+
   if (!appointment) {
     return (
       <Card>
@@ -47,11 +49,7 @@ export function NextAppointmentCard({ appointment }: NextAppointmentCardProps) {
         </p>
       </div>
       <div className="flex flex-col gap-1">
-        <Button
-          size="sm"
-          variant="success"
-          onClick={() => toast.info('Disponible en Plan 1D (Cobrar)')}
-        >
+        <Button size="sm" variant="success" onClick={() => openCharge(appointment)}>
           ✓ Marcar + cobrar
         </Button>
       </div>
