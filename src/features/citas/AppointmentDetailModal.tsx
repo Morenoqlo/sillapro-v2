@@ -35,6 +35,7 @@ export function AppointmentDetailModal({
     try {
       await confirm.mutateAsync(appointment.id);
       toast.success('Cita confirmada');
+      onClose(); // cerrar para que la lista refresque (la prop appointment está stale)
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Error');
     }
@@ -43,6 +44,7 @@ export function AppointmentDetailModal({
     try {
       await markNoShow.mutateAsync(appointment.id);
       toast.success('Marcada como no asistió');
+      onClose();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Error');
     }

@@ -34,6 +34,7 @@ test('admin can create a service and see it in the list', async ({ page }) => {
   await expect(page.getByText('Test Service')).toBeVisible({ timeout: 10_000 });
 
   await page.getByRole('button', { name: '+ Servicio' }).first().click();
+  await expect(page.getByRole('dialog').getByRole('heading', { name: 'Nuevo servicio' })).toBeVisible();
   await page.getByRole('dialog').getByLabel('Nombre').fill(name);
   await page.getByRole('dialog').getByLabel('Categoría').fill('Corte');
   await page.getByRole('dialog').getByRole('button', { name: 'Guardar' }).click();
@@ -51,6 +52,7 @@ test('admin can create a barber and see it in the list', async ({ page }) => {
   await expect(page.getByText('Test Barber')).toBeVisible({ timeout: 10_000 });
 
   await page.getByRole('button', { name: '+ Barbero' }).first().click();
+  await expect(page.getByRole('dialog').getByRole('heading', { name: 'Nuevo barbero' })).toBeVisible();
   await page.getByRole('dialog').getByLabel('Nombre').fill(name);
   await page.getByRole('dialog').getByLabel('Silla').fill('Silla 9');
   await page.getByRole('dialog').getByRole('button', { name: 'Guardar' }).click();
@@ -71,6 +73,12 @@ test('admin can create a client and find it via search', async ({ page }) => {
   await expect(page.getByText('Sin clientes aún')).toBeVisible({ timeout: 10_000 });
 
   await page.getByRole('button', { name: '+ Cliente' }).first().click();
+  // Esperar que el dialog esté completamente renderizado antes de fill
+  // (evita race con form initialization).
+  await expect(page.getByRole('dialog').getByRole('heading', { name: 'Nuevo cliente' })).toBeVisible();
+  // Esperar a que las queries iniciales hagan settle (evita race con re-renders
+  // de la página que podrían interferir con el form state).
+  await page.waitForLoadState('networkidle');
   await page.getByRole('dialog').getByLabel('Nombre').fill(name);
   await page.getByRole('dialog').getByLabel('Teléfono').fill(phone);
   await page.getByRole('dialog').getByRole('button', { name: 'Guardar' }).click();
