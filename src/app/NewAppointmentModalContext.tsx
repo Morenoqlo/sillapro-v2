@@ -7,6 +7,7 @@ interface ContextValue {
 
 const Ctx = createContext<ContextValue | null>(null);
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useNewAppointment(): ContextValue {
   const v = useContext(Ctx);
   if (!v) throw new Error('useNewAppointment must be used inside NewAppointmentProvider');

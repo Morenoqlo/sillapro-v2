@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/incompatible-library -- react-hook-form's `watch` is not compatible with React Compiler; functionality is correct */
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -118,6 +119,7 @@ export function NewAppointmentModal({ appointment, prefilled, onClose }: NewAppo
         <FormField label="Cliente" htmlFor="clientId" error={errors.clientId?.message}>
           <ClientCombobox
             value={watch('clientId')}
+            initialDisplayName={appointment?.client?.full_name ?? ''}
             onChange={(id, client) => {
               setValue('clientId', id, { shouldValidate: true });
               setSelectedClient({ id, full_name: client.full_name });

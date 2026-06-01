@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 import { Input } from '@/ui/Input';
 import { Button } from '@/ui/Button';
@@ -7,23 +7,25 @@ import type { Client } from '@/features/clientes/types';
 
 interface ClientComboboxProps {
   value: string;
+  /** Optional initial display name (when editing an existing appointment). */
+  initialDisplayName?: string;
   onChange: (clientId: string, client: Client) => void;
   error?: string;
 }
 
-export function ClientCombobox({ value, onChange, error }: ClientComboboxProps) {
-  const [search, setSearch] = useState('');
+export function ClientCombobox({
+  value: _value,
+  initialDisplayName,
+  onChange,
+  error,
+}: ClientComboboxProps) {
+  // The displayed text in the input. Seeded once from initialDisplayName so
+  // edit mode shows the current client's name; subsequent typing replaces it.
+  const [search, setSearch] = useState(initialDisplayName ?? '');
   const [showList, setShowList] = useState(false);
   const [creating, setCreating] = useState(false);
   const { list } = useClients(search);
   const { create } = useClientMutations();
-
-  useEffect(() => {
-    if (value && !search && list.data) {
-      const found = list.data.find((c) => c.id === value);
-      if (found) setSearch(found.full_name);
-    }
-  }, [value, list.data, search]);
 
   const results = (list.data ?? []).slice(0, 5);
   const exactMatch = results.find((c) => c.full_name.toLowerCase() === search.toLowerCase());
