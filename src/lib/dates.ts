@@ -46,3 +46,59 @@ export function minutesBetween(a: Date, b: Date): number {
 export function addMinutes(date: Date, minutes: number): Date {
   return fnsAddMinutes(date, minutes);
 }
+
+/**
+ * Combines a YYYY-MM-DD date string and HH:MM time string interpreted in
+ * America/Santiago timezone and returns a UTC ISO string ready for Postgres.
+ * Computes the timezone offset for that specific moment (handles DST transitions).
+ */
+export function isoForDateTimeInTZ(dateYMD: string, timeHM: string): string {
+  const naiveUTC = new Date(`${dateYMD}T${timeHM}:00.000Z`);
+  const offsetMinutes = getTzOffsetMinutes(naiveUTC, TZ);
+  return new Date(naiveUTC.getTime() - offsetMinutes * 60_000).toISOString();
+}
+
+export function parseISOToDate(iso: string): Date {
+  return new Date(iso);
+}
+
+export function sameDayInTZ(a: Date, b: Date): boolean {
+  return todayBusinessDate(a) === todayBusinessDate(b);
+}
+
+function getTzOffsetMinutes(date: Date, tz: string): number {
+  const utcParts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'UTC',
+    hour12: false,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  }).formatToParts(date);
+  const tzParts = new Intl.DateTimeFormat('en-US', {
+    timeZone: tz,
+    hour12: false,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  }).formatToParts(date);
+  const toMs = (parts: Intl.DateTimeFormatPart[]) => {
+    const map: Record<string, string> = {};
+    for (const p of parts) map[p.type] = p.value;
+    const hour = map.hour === '24' ? '00' : map.hour;
+    return Date.UTC(
+      Number(map.year),
+      Number(map.month) - 1,
+      Number(map.day),
+      Number(hour),
+      Number(map.minute),
+      Number(map.second),
+    );
+  };
+  return (toMs(tzParts) - toMs(utcParts)) / 60_000;
+}
