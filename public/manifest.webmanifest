@@ -1,0 +1,17 @@
+{
+  "name": "SillaPro",
+  "short_name": "SillaPro",
+  "description": "Consola interna para barbería",
+  "start_url": "/barbero/mi-dia",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0F172A",
+  "icons": [
+    {
+      "src": "/icon-192.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
