@@ -1,5 +1,7 @@
 import { Card } from '@/ui/Card';
 import { formatCLP } from '@/lib/money';
+import { todayBusinessDate } from '@/lib/dates';
+import { useTodayPayments } from '@/features/cobrar/hooks/useTodayPayments';
 import type { AppointmentWithRefs } from '@/features/citas/types';
 
 interface DayKpisSidebarProps {
@@ -7,18 +9,26 @@ interface DayKpisSidebarProps {
 }
 
 export function DayKpisSidebar({ appointments }: DayKpisSidebarProps) {
+  const today = todayBusinessDate();
+  const { data: payments } = useTodayPayments(today);
+
   const completed = appointments.filter((a) => a.status === 'completed');
   const confirmed = appointments.filter((a) => a.status === 'confirmed');
   const pending = appointments.filter((a) => a.status === 'pending');
-  const grossCompleted = completed.reduce((sum, a) => sum + Number(a.price_amount), 0);
+
+  const paymentsList = payments ?? [];
+  const grossPaid = paymentsList.reduce(
+    (sum, p) => sum + Number(p.amount) + Number(p.tip_amount),
+    0,
+  );
 
   return (
     <Card>
       <div className="mb-3">
         <p className="text-xs uppercase tracking-wide text-gray-500">Caja del día</p>
-        <p className="text-2xl font-bold text-gray-900">{formatCLP(grossCompleted)}</p>
+        <p className="text-2xl font-bold text-gray-900">{formatCLP(grossPaid)}</p>
         <p className="text-xs text-gray-400">
-          (Sólo cobros confirmados — flujo completo en Plan 1D)
+          {paymentsList.length} {paymentsList.length === 1 ? 'cobro' : 'cobros'} hoy
         </p>
       </div>
       <ul className="space-y-1 text-sm">
