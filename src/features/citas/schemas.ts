@@ -10,7 +10,7 @@ export const appointmentFormSchema = z.object({
   barberId: uuid,
   date: z.string().regex(dateRegex, 'Formato YYYY-MM-DD'),
   time: z.string().regex(timeRegex, 'Formato HH:MM'),
-  note: z.string().max(500).default(''),
+  note: z.string().max(500),
 });
 export type AppointmentFormInput = z.infer<typeof appointmentFormSchema>;
 
