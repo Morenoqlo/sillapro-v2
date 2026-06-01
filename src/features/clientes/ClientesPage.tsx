@@ -125,7 +125,7 @@ export function ClientesPage() {
         </Card>
       )}
 
-      <ClientModal open={modalOpen} client={editing} onClose={() => setModalOpen(false)} />
+      {modalOpen && <ClientModal client={editing} onClose={() => setModalOpen(false)} />}
     </div>
   );
 }

@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
@@ -11,34 +10,25 @@ import { useClientMutations } from './hooks/useClients';
 import type { Client } from './types';
 
 interface ClientModalProps {
-  open: boolean;
   client: Client | null;
   onClose: () => void;
 }
 
-const DEFAULTS: ClientFormInput = { fullName: '', phone: '', notes: '' };
-
-export function ClientModal({ open, client, onClose }: ClientModalProps) {
+// Este modal se monta sólo cuando está abierto (render condicional en la página),
+// por eso useForm inicializa con los valores correctos al montar — sin useEffect
+// reset que pueda pisar lo que el usuario escribe justo tras abrir.
+export function ClientModal({ client, onClose }: ClientModalProps) {
   const { create, update } = useClientMutations();
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm<ClientFormInput>({
     resolver: zodResolver(clientFormSchema),
-    defaultValues: DEFAULTS,
+    defaultValues: client
+      ? { fullName: client.full_name, phone: client.phone, notes: client.notes }
+      : { fullName: '', phone: '', notes: '' },
   });
-
-  useEffect(() => {
-    if (open) {
-      reset(
-        client
-          ? { fullName: client.full_name, phone: client.phone, notes: client.notes }
-          : DEFAULTS,
-      );
-    }
-  }, [open, client, reset]);
 
   async function onSubmit(values: ClientFormInput) {
     try {
@@ -58,7 +48,7 @@ export function ClientModal({ open, client, onClose }: ClientModalProps) {
   const submitting = create.isPending || update.isPending;
 
   return (
-    <Dialog open={open} onClose={onClose} title={client ? 'Editar cliente' : 'Nuevo cliente'}>
+    <Dialog open onClose={onClose} title={client ? 'Editar cliente' : 'Nuevo cliente'}>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <FormField label="Nombre" htmlFor="fullName" error={errors.fullName?.message}>
           <Input id="fullName" placeholder="Carla Rodríguez" {...register('fullName')} />
