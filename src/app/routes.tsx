@@ -19,6 +19,7 @@ import { ClientDetailPage } from '@/features/clientes/ClientDetailPage';
 import { HoyPage } from '@/features/hoy/HoyPage';
 import { AgendaPage } from '@/features/agenda/AgendaPage';
 import { CajaPage } from '@/features/caja/CajaPage';
+import { ReportesPage } from '@/features/reportes/ReportesPage';
 
 function Placeholder({ title }: { title: string }) {
   return (
@@ -69,7 +70,7 @@ export function AppRoutes() {
         <Route path="clientes" element={<ClientesPage />} />
         <Route path="clientes/:id" element={<ClientDetailPage />} />
         <Route path="caja" element={<CajaPage />} />
-        <Route path="reportes" element={<Placeholder title="Reportes" />} />
+        <Route path="reportes" element={<ReportesPage />} />
         <Route path="servicios" element={<ServiciosPage />} />
         <Route path="equipo" element={<EquipoPage />} />
         <Route path="equipo/:id" element={<BarberDetailPage />} />
