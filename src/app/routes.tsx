@@ -20,6 +20,9 @@ import { HoyPage } from '@/features/hoy/HoyPage';
 import { AgendaPage } from '@/features/agenda/AgendaPage';
 import { CajaPage } from '@/features/caja/CajaPage';
 import { ReportesPage } from '@/features/reportes/ReportesPage';
+import { MiDiaPage } from '@/features/barbero/MiDiaPage';
+import { MisComisionesPage } from '@/features/barbero/MisComisionesPage';
+import { MiHistorialPage } from '@/features/barbero/MiHistorialPage';
 
 function Placeholder({ title }: { title: string }) {
   return (
@@ -89,9 +92,9 @@ export function AppRoutes() {
         }
       >
         <Route index element={<Navigate to="mi-dia" replace />} />
-        <Route path="mi-dia" element={<Placeholder title="Mi día" />} />
-        <Route path="comisiones" element={<Placeholder title="Comisiones" />} />
-        <Route path="historial" element={<Placeholder title="Historial" />} />
+        <Route path="mi-dia" element={<MiDiaPage />} />
+        <Route path="comisiones" element={<MisComisionesPage />} />
+        <Route path="historial" element={<MiHistorialPage />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/admin" replace />} />
