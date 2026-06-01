@@ -15,6 +15,7 @@ import { ServiciosPage } from '@/features/servicios/ServiciosPage';
 import { EquipoPage } from '@/features/equipo/EquipoPage';
 import { ClientesPage } from '@/features/clientes/ClientesPage';
 import { HoyPage } from '@/features/hoy/HoyPage';
+import { AgendaPage } from '@/features/agenda/AgendaPage';
 
 function Placeholder({ title }: { title: string }) {
   return (
@@ -61,7 +62,7 @@ export function AppRoutes() {
       >
         <Route index element={<Navigate to="hoy" replace />} />
         <Route path="hoy" element={<HoyPage />} />
-        <Route path="agenda" element={<Placeholder title="Agenda" />} />
+        <Route path="agenda" element={<AgendaPage />} />
         <Route path="clientes" element={<ClientesPage />} />
         <Route path="caja" element={<Placeholder title="Caja" />} />
         <Route path="reportes" element={<Placeholder title="Reportes" />} />
