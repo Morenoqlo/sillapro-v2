@@ -13,6 +13,7 @@ import { AuthCallbackPage } from '@/features/auth/AuthCallbackPage';
 import { OnboardingPage } from '@/features/onboarding/OnboardingPage';
 import { ServiciosPage } from '@/features/servicios/ServiciosPage';
 import { EquipoPage } from '@/features/equipo/EquipoPage';
+import { BarberDetailPage } from '@/features/equipo/BarberDetailPage';
 import { ClientesPage } from '@/features/clientes/ClientesPage';
 import { ClientDetailPage } from '@/features/clientes/ClientDetailPage';
 import { HoyPage } from '@/features/hoy/HoyPage';
@@ -71,6 +72,7 @@ export function AppRoutes() {
         <Route path="reportes" element={<Placeholder title="Reportes" />} />
         <Route path="servicios" element={<ServiciosPage />} />
         <Route path="equipo" element={<EquipoPage />} />
+        <Route path="equipo/:id" element={<BarberDetailPage />} />
         <Route path="ajustes" element={<Placeholder title="Ajustes" />} />
       </Route>
 
