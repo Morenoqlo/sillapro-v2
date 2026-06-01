@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/hooks/useAuth';
 import type { ShopInput, BarberInput, ServiceInput } from '../schemas';
 
 export interface CreateInitialShopInput {
@@ -10,6 +11,7 @@ export interface CreateInitialShopInput {
 
 export function useCreateInitialShop() {
   const qc = useQueryClient();
+  const { user } = useAuth();
 
   return useMutation({
     mutationFn: async (input: CreateInitialShopInput): Promise<string> => {
@@ -30,6 +32,11 @@ export function useCreateInitialShop() {
       return data as string;
     },
     onSuccess: () => {
+      // Update cache directly so RequireOnboarded sees hasMembership=true on
+      // next render (invalidate alone leaves stale cached value momentarily).
+      if (user?.id) {
+        qc.setQueryData(['onboarding-status', user.id], { hasMembership: true });
+      }
       qc.invalidateQueries({ queryKey: ['onboarding-status'] });
       qc.invalidateQueries({ queryKey: ['tenant'] });
     },
