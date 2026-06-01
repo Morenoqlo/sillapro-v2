@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Button } from '@/ui/Button';
 import { Card } from '@/ui/Card';
@@ -93,6 +94,9 @@ export function ClientesPage() {
                     <StatusBadge tone={c.status}>{STATUS_LABEL[c.status]}</StatusBadge>
                   </td>
                   <td className="px-4 py-2 text-right">
+                    <Link to={`/admin/clientes/${c.id}`} className="mr-3 text-brand hover:underline">
+                      Ver detalle
+                    </Link>
                     <button
                       type="button"
                       onClick={() => openEdit(c)}

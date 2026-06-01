@@ -14,6 +14,7 @@ import { OnboardingPage } from '@/features/onboarding/OnboardingPage';
 import { ServiciosPage } from '@/features/servicios/ServiciosPage';
 import { EquipoPage } from '@/features/equipo/EquipoPage';
 import { ClientesPage } from '@/features/clientes/ClientesPage';
+import { ClientDetailPage } from '@/features/clientes/ClientDetailPage';
 import { HoyPage } from '@/features/hoy/HoyPage';
 import { AgendaPage } from '@/features/agenda/AgendaPage';
 import { CajaPage } from '@/features/caja/CajaPage';
@@ -65,6 +66,7 @@ export function AppRoutes() {
         <Route path="hoy" element={<HoyPage />} />
         <Route path="agenda" element={<AgendaPage />} />
         <Route path="clientes" element={<ClientesPage />} />
+        <Route path="clientes/:id" element={<ClientDetailPage />} />
         <Route path="caja" element={<CajaPage />} />
         <Route path="reportes" element={<Placeholder title="Reportes" />} />
         <Route path="servicios" element={<ServiciosPage />} />
