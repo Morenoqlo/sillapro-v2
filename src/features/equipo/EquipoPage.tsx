@@ -105,7 +105,7 @@ export function EquipoPage() {
         </Card>
       )}
 
-      <BarberModal open={modalOpen} barber={editing} onClose={() => setModalOpen(false)} />
+      {modalOpen && <BarberModal barber={editing} onClose={() => setModalOpen(false)} />}
 
       <ConfirmDialog
         open={toToggle !== null}

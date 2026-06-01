@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
@@ -11,50 +10,37 @@ import { useServiceMutations } from './hooks/useServices';
 import type { Service } from './types';
 
 interface ServiceModalProps {
-  open: boolean;
   service: Service | null;
   onClose: () => void;
 }
 
-export function ServiceModal({ open, service, onClose }: ServiceModalProps) {
+// Se monta sólo cuando está abierto (render condicional en la página): useForm
+// inicializa con los valores correctos al montar, sin useEffect reset que pueda
+// pisar lo que el usuario escribe justo tras abrir.
+export function ServiceModal({ service, onClose }: ServiceModalProps) {
   const { create, update } = useServiceMutations();
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm<ServiceFormInput>({
     resolver: zodResolver(serviceFormSchema),
-    defaultValues: {
-      name: '',
-      category: 'Corte',
-      durationMinutes: 30,
-      priceAmount: 12000,
-      commissionPercent: 40,
-    },
+    defaultValues: service
+      ? {
+          name: service.name,
+          category: service.category,
+          durationMinutes: service.duration_minutes,
+          priceAmount: service.price_amount,
+          commissionPercent: service.commission_percent,
+        }
+      : {
+          name: '',
+          category: 'Corte',
+          durationMinutes: 30,
+          priceAmount: 12000,
+          commissionPercent: 40,
+        },
   });
-
-  useEffect(() => {
-    if (open) {
-      reset(
-        service
-          ? {
-              name: service.name,
-              category: service.category,
-              durationMinutes: service.duration_minutes,
-              priceAmount: service.price_amount,
-              commissionPercent: service.commission_percent,
-            }
-          : {
-              name: '',
-              category: 'Corte',
-              durationMinutes: 30,
-              priceAmount: 12000,
-              commissionPercent: 40,
-            },
-      );
-    }
-  }, [open, service, reset]);
 
   async function onSubmit(values: ServiceFormInput) {
     try {
@@ -74,7 +60,7 @@ export function ServiceModal({ open, service, onClose }: ServiceModalProps) {
   const submitting = create.isPending || update.isPending;
 
   return (
-    <Dialog open={open} onClose={onClose} title={service ? 'Editar servicio' : 'Nuevo servicio'}>
+    <Dialog open onClose={onClose} title={service ? 'Editar servicio' : 'Nuevo servicio'}>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <FormField label="Nombre" htmlFor="name" error={errors.name?.message}>
           <Input id="name" placeholder="Corte clásico" {...register('name')} />

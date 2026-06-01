@@ -110,7 +110,7 @@ export function ServiciosPage() {
         </Card>
       )}
 
-      <ServiceModal open={modalOpen} service={editing} onClose={() => setModalOpen(false)} />
+      {modalOpen && <ServiceModal service={editing} onClose={() => setModalOpen(false)} />}
 
       <ConfirmDialog
         open={toToggle !== null}

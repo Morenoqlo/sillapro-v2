@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
@@ -11,42 +10,29 @@ import { useBarberMutations } from './hooks/useBarbers';
 import type { Barber } from './types';
 
 interface BarberModalProps {
-  open: boolean;
   barber: Barber | null;
   onClose: () => void;
 }
 
-const DEFAULTS: BarberFormInput = {
-  fullName: '',
-  chairLabel: 'Silla',
-  commissionDefault: 40,
-};
-
-export function BarberModal({ open, barber, onClose }: BarberModalProps) {
+// Se monta sólo cuando está abierto (render condicional en la página): useForm
+// inicializa con los valores correctos al montar, sin useEffect reset que pueda
+// pisar lo que el usuario escribe justo tras abrir.
+export function BarberModal({ barber, onClose }: BarberModalProps) {
   const { create, update } = useBarberMutations();
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm<BarberFormInput>({
     resolver: zodResolver(barberFormSchema),
-    defaultValues: DEFAULTS,
+    defaultValues: barber
+      ? {
+          fullName: barber.full_name,
+          chairLabel: barber.chair_label,
+          commissionDefault: barber.commission_default,
+        }
+      : { fullName: '', chairLabel: 'Silla', commissionDefault: 40 },
   });
-
-  useEffect(() => {
-    if (open) {
-      reset(
-        barber
-          ? {
-              fullName: barber.full_name,
-              chairLabel: barber.chair_label,
-              commissionDefault: barber.commission_default,
-            }
-          : DEFAULTS,
-      );
-    }
-  }, [open, barber, reset]);
 
   async function onSubmit(values: BarberFormInput) {
     try {
@@ -66,7 +52,7 @@ export function BarberModal({ open, barber, onClose }: BarberModalProps) {
   const submitting = create.isPending || update.isPending;
 
   return (
-    <Dialog open={open} onClose={onClose} title={barber ? 'Editar barbero' : 'Nuevo barbero'}>
+    <Dialog open onClose={onClose} title={barber ? 'Editar barbero' : 'Nuevo barbero'}>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <FormField label="Nombre" htmlFor="fullName" error={errors.fullName?.message}>
           <Input id="fullName" placeholder="Diego" {...register('fullName')} />
