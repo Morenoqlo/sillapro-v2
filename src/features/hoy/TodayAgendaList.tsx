@@ -49,9 +49,7 @@ export function TodayAgendaList({ date, appointments }: TodayAgendaListProps) {
   const [createFromSlot, setCreateFromSlot] = useState<{ date: string; time: string } | null>(null);
 
   const barbers = (barbersQ.data ?? []).filter((b) => b.active);
-  const shop = tenant?.barbershop as
-    | { open_time?: string; close_time?: string; slot_minutes?: number }
-    | undefined;
+  const shop = tenant?.barbershop;
 
   if (!shop) return null;
 
@@ -62,9 +60,9 @@ export function TodayAgendaList({ date, appointments }: TodayAgendaListProps) {
   const freeSlots = computeFreeSlots(
     {
       date,
-      openTime: shop.open_time ?? '09:00',
-      closeTime: shop.close_time ?? '20:00',
-      slotMinutes: shop.slot_minutes ?? 30,
+      openTime: shop.open_time,
+      closeTime: shop.close_time,
+      slotMinutes: shop.slot_minutes,
     },
     booked,
   );

@@ -14,6 +14,9 @@ export type Membership = {
     timezone: string;
     currency: string;
     slug: string | null;
+    open_time: string;
+    close_time: string;
+    slot_minutes: number;
   };
 };
 
@@ -35,7 +38,7 @@ export function useTenant() {
           barbershop_id,
           role,
           barber_id,
-          barbershop:barbershops(id, name, timezone, currency, slug)
+          barbershop:barbershops(id, name, timezone, currency, slug, open_time, close_time, slot_minutes)
         `,
         )
         .eq('user_id', user.id)
