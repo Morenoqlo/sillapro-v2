@@ -11,6 +11,7 @@ export interface ShopSettings {
   open_time: string;
   close_time: string;
   slot_minutes: number;
+  phone: string;
 }
 
 export function useShopSettings() {
@@ -22,7 +23,7 @@ export function useShopSettings() {
     queryFn: async (): Promise<ShopSettings> => {
       const { data, error } = await supabase
         .from('barbershops')
-        .select('id, name, slug, timezone, open_time, close_time, slot_minutes')
+        .select('id, name, slug, timezone, open_time, close_time, slot_minutes, phone')
         .eq('id', barbershopId!)
         .single();
       if (error) throw error;
@@ -56,6 +57,7 @@ export function useUpdateShopSettings() {
           open_time: input.openTime,
           close_time: input.closeTime,
           slot_minutes: input.slotMinutes,
+          phone: input.phone,
         })
         .eq('id', barbershopId!);
       if (error) throw error;

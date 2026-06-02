@@ -63,6 +63,14 @@ function AjustesForm({ initial }: { initial: ShopSettingsInput }) {
             })}
           />
         </FormField>
+        <FormField
+          label="Teléfono del local (WhatsApp)"
+          htmlFor="phone"
+          error={errors.phone?.message}
+          hint="Con código de país. Ej: +56912345678 — para recibir notificaciones de reservas."
+        >
+          <Input id="phone" type="tel" placeholder="+56912345678" {...register('phone')} />
+        </FormField>
       </Card>
 
       {/* Horario de atención */}
@@ -143,6 +151,7 @@ export function AjustesPage() {
             openTime: query.data.open_time,
             closeTime: query.data.close_time,
             slotMinutes: query.data.slot_minutes,
+            phone: query.data.phone,
           }}
         />
       )}
