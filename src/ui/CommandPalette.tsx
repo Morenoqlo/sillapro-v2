@@ -39,7 +39,10 @@ export function CommandPalette() {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[10vh]">
+    <div
+      className="fixed inset-0 z-[100] flex items-start justify-center pt-[10vh]"
+      onKeyDown={(e) => { if (e.key === 'Escape') close(); }}
+    >
       <div
         className="absolute inset-0 bg-black/40"
         onClick={close}
