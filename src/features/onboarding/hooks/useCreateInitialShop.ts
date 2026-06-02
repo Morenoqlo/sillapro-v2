@@ -29,7 +29,21 @@ export function useCreateInitialShop() {
         service_commission_percent: input.service.commissionPercent,
       });
       if (error) throw error;
-      return data as string;
+      const barbershopId = data as string;
+
+      // Set slug if provided (RPC doesn't accept it as param)
+      if (input.shop.slug) {
+        const { error: slugErr } = await supabase
+          .from('barbershops')
+          .update({ slug: input.shop.slug })
+          .eq('id', barbershopId);
+        if (slugErr) {
+          // Slug uniqueness conflict → user can set it in Ajustes later
+          console.warn('Slug conflict during onboarding:', slugErr.message);
+        }
+      }
+
+      return barbershopId;
     },
     onSuccess: () => {
       // Update cache directly so RequireOnboarded sees hasMembership=true on
