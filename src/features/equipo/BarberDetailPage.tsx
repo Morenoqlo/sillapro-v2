@@ -11,6 +11,7 @@ import { formatTime, formatDateLong, parseISOToDate } from '@/lib/dates';
 import { useBarberDetail } from './hooks/useBarberDetail';
 import { useBarberMonthStats } from './hooks/useBarberMonthStats';
 import { useBarberServiceCommissions, useToggleBarberService } from './hooks/useBarberServiceCommissions';
+import { useCreateBarberInvite } from './hooks/useBarberInvite';
 
 export function BarberDetailPage() {
   const { id = '' } = useParams<{ id: string }>();
@@ -20,6 +21,8 @@ export function BarberDetailPage() {
   const { data: services = [], isLoading: loadingServices } = useBarberServiceCommissions(id);
   const toggleService = useToggleBarberService(id);
   const [activeTab, setActiveTab] = useState<'history' | 'services'>('history');
+  const createInvite = useCreateBarberInvite();
+  const [inviteCopied, setInviteCopied] = useState(false);
 
   if (loadingBarber) return <p className="text-sm text-gray-500">Cargando...</p>;
   if (!barber) {
@@ -33,6 +36,19 @@ export function BarberDetailPage() {
         }
       />
     );
+  }
+
+  async function handleGenerateInvite() {
+    try {
+      const token = await createInvite.mutateAsync(id);
+      const url = `${window.location.origin}/unirse?token=${token}`;
+      await navigator.clipboard.writeText(url);
+      setInviteCopied(true);
+      toast.success('¡Link copiado! Envíalo al barbero por WhatsApp.');
+      setTimeout(() => setInviteCopied(false), 3000);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Error al generar el link');
+    }
   }
 
   async function handleToggle(serviceId: string, currentlyEnabled: boolean) {
@@ -59,15 +75,25 @@ export function BarberDetailPage() {
         </Button>
       </div>
 
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">{barber.full_name}</h2>
-        <div className="mt-1 flex items-center gap-2">
-          <StatusBadge tone={barber.active ? 'active' : 'inactive'}>
-            {barber.active ? 'Activo' : 'Inactivo'}
-          </StatusBadge>
-          <span className="text-sm text-gray-500">{barber.chair_label}</span>
-          <span className="text-sm text-gray-500">· Comisión base {barber.commission_default}%</span>
+      <div className="mb-6 flex items-start justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">{barber.full_name}</h2>
+          <div className="mt-1 flex items-center gap-2">
+            <StatusBadge tone={barber.active ? 'active' : 'inactive'}>
+              {barber.active ? 'Activo' : 'Inactivo'}
+            </StatusBadge>
+            <span className="text-sm text-gray-500">{barber.chair_label}</span>
+            <span className="text-sm text-gray-500">· Comisión base {barber.commission_default}%</span>
+          </div>
         </div>
+        <Button
+          size="sm"
+          variant="secondary"
+          onClick={handleGenerateInvite}
+          disabled={createInvite.isPending}
+        >
+          {inviteCopied ? '✓ Link copiado' : '🔗 Generar enlace de acceso'}
+        </Button>
       </div>
 
       <div className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-4">
