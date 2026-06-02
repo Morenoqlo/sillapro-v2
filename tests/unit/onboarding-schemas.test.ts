@@ -36,6 +36,55 @@ describe('shopSchema', () => {
       }).success,
     ).toBe(false);
   });
+
+  it('accepts valid slug', () => {
+    expect(
+      shopSchema.safeParse({
+        name: 'Foo',
+        timezone: 'America/Santiago',
+        openTime: '09:00',
+        closeTime: '20:00',
+        slotMinutes: 30,
+        slug: 'norte-fino',
+      }).success,
+    ).toBe(true);
+  });
+
+  it('accepts null/empty slug (optional)', () => {
+    expect(
+      shopSchema.safeParse({
+        name: 'Foo',
+        timezone: 'America/Santiago',
+        openTime: '09:00',
+        closeTime: '20:00',
+        slotMinutes: 30,
+        slug: null,
+      }).success,
+    ).toBe(true);
+    expect(
+      shopSchema.safeParse({
+        name: 'Foo',
+        timezone: 'America/Santiago',
+        openTime: '09:00',
+        closeTime: '20:00',
+        slotMinutes: 30,
+        slug: '',
+      }).success,
+    ).toBe(true);
+  });
+
+  it('rejects slug with uppercase or spaces', () => {
+    expect(
+      shopSchema.safeParse({
+        name: 'Foo',
+        timezone: 'America/Santiago',
+        openTime: '09:00',
+        closeTime: '20:00',
+        slotMinutes: 30,
+        slug: 'Norte Fino',
+      }).success,
+    ).toBe(false);
+  });
 });
 
 describe('barberSchema', () => {
