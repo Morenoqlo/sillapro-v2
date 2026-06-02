@@ -26,10 +26,14 @@ import { MiHistorialPage } from '@/features/barbero/MiHistorialPage';
 import { AjustesPage } from '@/features/ajustes/AjustesPage';
 import { ReservaPage } from '@/features/reserva/ReservaPage';
 import { UnirsePage } from '@/features/unirse/UnirsePage';
+import { LandingPage } from '@/features/landing/LandingPage';
 
 export function AppRoutes() {
   return (
     <Routes>
+      {/* Landing pública. Si hay sesión, manda a /admin. */}
+      <Route path="/" element={<PublicOnly><LandingPage /></PublicOnly>} />
+
       {/* Auth routes (públicas, redirigen a /admin si ya hay sesión) */}
       <Route path="/login" element={<PublicOnly><LoginPage /></PublicOnly>} />
       <Route path="/register" element={<PublicOnly><RegisterPage /></PublicOnly>} />
