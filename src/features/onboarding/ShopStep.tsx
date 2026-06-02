@@ -21,6 +21,7 @@ export function ShopStep({ defaultValues, onSubmit }: ShopStepProps) {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<ShopInput>({
     resolver: zodResolver(shopSchema),
@@ -29,6 +30,7 @@ export function ShopStep({ defaultValues, onSubmit }: ShopStepProps) {
       openTime: '09:00',
       closeTime: '20:00',
       slotMinutes: 30,
+      slug: null,
       ...defaultValues,
     },
   });
@@ -37,6 +39,28 @@ export function ShopStep({ defaultValues, onSubmit }: ShopStepProps) {
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
       <FormField label="Nombre del local" htmlFor="name" error={errors.name?.message}>
         <Input id="name" placeholder="Norte Fino Barbería" {...register('name')} />
+      </FormField>
+      <FormField
+        label="URL de reserva (opcional)"
+        htmlFor="slug"
+        error={errors.slug?.message}
+        hint={
+          watch('slug')
+            ? `Los clientes reservarán en: /reservar/${String(watch('slug'))}`
+            : 'Ej: norte-fino — puedes configurarlo después en Ajustes'
+        }
+      >
+        <Input
+          id="slug"
+          placeholder="norte-fino"
+          {...register('slug', {
+            setValueAs: (v: unknown) => {
+              if (!v) return null;
+              const s = String(v).trim();
+              return s === '' ? null : s;
+            },
+          })}
+        />
       </FormField>
       <FormField label="Zona horaria" htmlFor="timezone" error={errors.timezone?.message}>
         <Select id="timezone" {...register('timezone')}>
