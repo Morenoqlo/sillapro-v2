@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/incompatible-library -- react-hook-form's watch() is incompatible with React Compiler */
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/ui/Button';
