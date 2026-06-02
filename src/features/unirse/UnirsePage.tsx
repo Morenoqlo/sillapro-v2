@@ -22,24 +22,25 @@ export function UnirsePage() {
   const [formError, setFormError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!token) {
-      setInviteError('Token inválido');
-      setLoadingInvite(false);
-      return;
-    }
-    supabase
-      .from('barber_invites')
-      .select('barbershop:barbershops(name), barber:barbers(full_name)')
-      .eq('token', token)
-      .maybeSingle()
-      .then(({ data, error }) => {
+    async function loadInvite() {
+      if (!token) {
+        setInviteError('Token inválido');
         setLoadingInvite(false);
-        if (error || !data) {
-          setInviteError('Invitación no válida o ya utilizada.');
-          return;
-        }
-        setInvite(data as unknown as InviteInfo);
-      });
+        return;
+      }
+      const { data, error } = await supabase
+        .from('barber_invites')
+        .select('barbershop:barbershops(name), barber:barbers(full_name)')
+        .eq('token', token)
+        .maybeSingle();
+      setLoadingInvite(false);
+      if (error || !data) {
+        setInviteError('Invitación no válida o ya utilizada.');
+        return;
+      }
+      setInvite(data as unknown as InviteInfo);
+    }
+    void loadInvite();
   }, [token]);
 
   useEffect(() => {

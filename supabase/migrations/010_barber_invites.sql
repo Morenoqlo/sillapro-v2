@@ -119,3 +119,4 @@ $$;
 GRANT EXECUTE ON FUNCTION public.accept_barber_invite(UUID) TO authenticated;
 
 COMMIT;
+GRANT SELECT ON public.barber_invites TO anon, authenticated;
