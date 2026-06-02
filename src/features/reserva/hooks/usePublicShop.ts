@@ -14,7 +14,7 @@ export function usePublicShop(slug: string | undefined) {
 
       const { data: shop, error: shopErr } = await supabase
         .from('barbershops')
-        .select('id, name, slug, timezone, open_time, close_time, slot_minutes')
+        .select('id, name, slug, timezone, open_time, close_time, slot_minutes, phone')
         .eq('slug', slug)
         .maybeSingle();
       if (shopErr) throw shopErr;
@@ -38,7 +38,7 @@ export function usePublicShop(slug: string | undefined) {
 
       const raw = shop as unknown as {
         id: string; name: string; slug: string; timezone: string;
-        open_time: string; close_time: string; slot_minutes: number;
+        open_time: string; close_time: string; slot_minutes: number; phone: string;
       };
       return {
         ...raw,

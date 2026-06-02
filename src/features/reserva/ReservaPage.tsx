@@ -79,6 +79,14 @@ export function ReservaPage() {
       `Precio: ${formatCLP(booking.service.price_amount)}\n` +
       (booking.clientPhone ? `Teléfono: ${booking.clientPhone}` : ''),
     );
+    const ownerWaText = encodeURIComponent(
+      `Nueva reserva en ${shop.name}!\n` +
+      `Cliente: ${booking.clientName}${booking.clientPhone ? ` (${booking.clientPhone})` : ''}\n` +
+      `Servicio: ${booking.service?.name ?? ''}\n` +
+      `Barbero: ${booking.barber?.full_name ?? ''}\n` +
+      `${starts ? `Fecha: ${formatDateLong(starts)} a las ${formatTime(starts)}` : ''}\n` +
+      `Precio: ${booking.service ? formatCLP(booking.service.price_amount) : ''}`,
+    );
     return (
       <div className="flex min-h-screen items-center justify-center px-4">
         <div className="w-full max-w-sm text-center">
@@ -100,6 +108,17 @@ export function ReservaPage() {
               className="mt-6 inline-flex items-center gap-2 rounded-lg bg-green-600 px-5 py-3 text-sm font-semibold text-white hover:bg-green-700"
             >
               Enviar confirmación por WhatsApp
+            </a>
+          )}
+          {/* Notify owner via WhatsApp if phone configured */}
+          {shop.phone && (
+            <a
+              href={`https://wa.me/${shop.phone.replace(/\D/g, '')}?text=${ownerWaText}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 inline-flex items-center gap-2 rounded-lg border border-green-600 bg-white px-5 py-3 text-sm font-semibold text-green-600 hover:bg-green-50"
+            >
+              📩 Notificar al local
             </a>
           )}
           <button

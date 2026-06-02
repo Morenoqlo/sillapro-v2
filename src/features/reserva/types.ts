@@ -18,6 +18,7 @@ export interface PublicShop {
   open_time: string;   // HH:MM
   close_time: string;  // HH:MM
   slot_minutes: number;
+  phone: string;
   services: PublicService[];
   barbers: PublicBarber[];
 }
