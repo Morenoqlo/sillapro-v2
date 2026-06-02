@@ -26,7 +26,13 @@ export function useShopSettings() {
         .eq('id', barbershopId!)
         .single();
       if (error) throw error;
-      return data as unknown as ShopSettings;
+      const raw = data as unknown as ShopSettings;
+      // Postgres TIME columns return "HH:MM:SS" — strip seconds to match HH:MM schema
+      return {
+        ...raw,
+        open_time: raw.open_time.slice(0, 5),
+        close_time: raw.close_time.slice(0, 5),
+      };
     },
     enabled: !!barbershopId,
   });

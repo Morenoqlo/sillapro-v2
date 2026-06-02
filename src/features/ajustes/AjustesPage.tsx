@@ -55,7 +55,11 @@ function AjustesForm({ initial }: { initial: ShopSettingsInput }) {
             id="slug"
             placeholder="norte-fino"
             {...register('slug', {
-              setValueAs: (v: string) => (v.trim() === '' ? null : v.trim()),
+              setValueAs: (v: unknown) => {
+                if (v === null || v === undefined) return null;
+                const s = String(v).trim();
+                return s === '' ? null : s;
+              },
             })}
           />
         </FormField>
