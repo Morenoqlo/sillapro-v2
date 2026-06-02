@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { createTestUser, deleteTestUser, type TestUser } from './helpers/auth-helpers';
+import { createTestUser, deleteTestUser, todayInSantiago, type TestUser } from './helpers/auth-helpers';
 
 let user: TestUser;
 
@@ -114,14 +114,19 @@ test('admin can confirm a pending appointment from the detail modal', async ({ p
   await page.getByRole('dialog').getByLabel('Servicio').selectOption({ index: 1 });
   await page.getByRole('dialog').getByLabel('Barbero').selectOption({ index: 1 });
 
-  const today = new Date();
-  const ymd = today.toISOString().slice(0, 10);
+  // Use Santiago date (not UTC) to match useDayAppointments query range
+  const ymd = todayInSantiago();
   // Hora tarde con minutos derivados del stamp para evitar colisiones
   const hour = `19:${String(stamp % 60).padStart(2, '0')}`;
   await page.getByRole('dialog').getByLabel('Fecha').fill(ymd);
   await page.getByRole('dialog').getByLabel('Hora').fill(hour);
   await page.getByRole('dialog').getByRole('button', { name: 'Guardar cita' }).click();
   await expect(page.getByRole('dialog')).toBeHidden({ timeout: 10_000 });
+
+  // Reload to guarantee Hub Hoy shows the appointment (avoids React Query refetch race)
+  await page.reload();
+  await page.waitForLoadState('networkidle');
+  await expect(page.locator('main').getByText(clientName).last()).toBeVisible({ timeout: 30_000 });
 
   // Abrir el detalle de la cita desde la lista del Hub Hoy. El nombre del cliente
   // aparece dos veces en <main> (NextAppointmentCard arriba + TodayAgendaList abajo);

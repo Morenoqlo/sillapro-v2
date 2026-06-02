@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { createTestUser, deleteTestUser, type TestUser } from './helpers/auth-helpers';
+import { createTestUser, deleteTestUser, todayInSantiago, type TestUser } from './helpers/auth-helpers';
 
 let user: TestUser;
 
@@ -21,6 +21,10 @@ async function login(page: import('@playwright/test').Page) {
   await page.waitForLoadState('networkidle');
 }
 
+/**
+ * Creates an appointment for today and waits for it to appear in the Hub Hoy list.
+ * The clientName is used to verify the item loaded, so pass a unique value.
+ */
 async function createAppointmentForToday(
   page: import('@playwright/test').Page,
   clientName: string,
@@ -56,12 +60,17 @@ async function createAppointmentForToday(
   await page.getByRole('dialog').getByLabel('Barbero').selectOption({ index: 1 });
 
   const stamp = Date.now();
-  const ymd = new Date().toISOString().slice(0, 10);
+  const ymd = todayInSantiago();
   const hour = `19:${String(stamp % 60).padStart(2, '0')}`;
   await page.getByRole('dialog').getByLabel('Fecha').fill(ymd);
   await page.getByRole('dialog').getByLabel('Hora').fill(hour);
   await page.getByRole('dialog').getByRole('button', { name: 'Guardar cita' }).click();
   await expect(page.getByRole('dialog')).toBeHidden({ timeout: 10_000 });
+  // Reload the page to guarantee Hub Hoy shows the newly created appointment.
+  // React Query invalidation + refetch is async and can lose the race in slow environments.
+  await page.reload();
+  await page.waitForLoadState('networkidle');
+  await expect(page.locator('main').getByText(clientName).first()).toBeVisible({ timeout: 30_000 });
 }
 
 test('admin can charge an appointment from the global 💳 Cobrar button', async ({ page }) => {

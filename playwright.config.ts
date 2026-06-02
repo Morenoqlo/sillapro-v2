@@ -7,6 +7,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 1,
   workers: 1,
   reporter: 'list',
+  timeout: 60_000, // increased from 30s — tests with DB operations (cobrar, citas, caja) can take 30-50s
   use: {
     baseURL: 'http://localhost:5173',
   },
