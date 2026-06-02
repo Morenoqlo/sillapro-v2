@@ -24,6 +24,7 @@ import { MiDiaPage } from '@/features/barbero/MiDiaPage';
 import { MisComisionesPage } from '@/features/barbero/MisComisionesPage';
 import { MiHistorialPage } from '@/features/barbero/MiHistorialPage';
 import { AjustesPage } from '@/features/ajustes/AjustesPage';
+import { ReservaPage } from '@/features/reserva/ReservaPage';
 
 export function AppRoutes() {
   return (
@@ -88,6 +89,8 @@ export function AppRoutes() {
         <Route path="comisiones" element={<MisComisionesPage />} />
         <Route path="historial" element={<MiHistorialPage />} />
       </Route>
+
+      <Route path="/reservar/:slug" element={<ReservaPage />} />
 
       <Route path="*" element={<Navigate to="/admin" replace />} />
     </Routes>
