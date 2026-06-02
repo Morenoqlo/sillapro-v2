@@ -25,6 +25,7 @@ import { MisComisionesPage } from '@/features/barbero/MisComisionesPage';
 import { MiHistorialPage } from '@/features/barbero/MiHistorialPage';
 import { AjustesPage } from '@/features/ajustes/AjustesPage';
 import { ReservaPage } from '@/features/reserva/ReservaPage';
+import { UnirsePage } from '@/features/unirse/UnirsePage';
 
 export function AppRoutes() {
   return (
@@ -91,6 +92,8 @@ export function AppRoutes() {
       </Route>
 
       <Route path="/reservar/:slug" element={<ReservaPage />} />
+
+      <Route path="/unirse" element={<UnirsePage />} />
 
       <Route path="*" element={<Navigate to="/admin" replace />} />
     </Routes>
