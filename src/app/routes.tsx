@@ -23,15 +23,7 @@ import { ReportesPage } from '@/features/reportes/ReportesPage';
 import { MiDiaPage } from '@/features/barbero/MiDiaPage';
 import { MisComisionesPage } from '@/features/barbero/MisComisionesPage';
 import { MiHistorialPage } from '@/features/barbero/MiHistorialPage';
-
-function Placeholder({ title }: { title: string }) {
-  return (
-    <div>
-      <h2 className="text-2xl font-bold">{title}</h2>
-      <p className="mt-1 text-gray-500">Pantalla pendiente — fase posterior.</p>
-    </div>
-  );
-}
+import { AjustesPage } from '@/features/ajustes/AjustesPage';
 
 export function AppRoutes() {
   return (
@@ -77,7 +69,7 @@ export function AppRoutes() {
         <Route path="servicios" element={<ServiciosPage />} />
         <Route path="equipo" element={<EquipoPage />} />
         <Route path="equipo/:id" element={<BarberDetailPage />} />
-        <Route path="ajustes" element={<Placeholder title="Ajustes" />} />
+        <Route path="ajustes" element={<AjustesPage />} />
       </Route>
 
       {/* Barbero: requiere auth + onboarding */}
