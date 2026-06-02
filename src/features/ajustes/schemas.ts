@@ -18,7 +18,7 @@ export const shopSettingsSchema = z
     slotMinutes: z.number().int().refine((v) => [10, 15, 20, 30, 45, 60].includes(v), {
       message: 'Debe ser 10, 15, 20, 30, 45 o 60',
     }),
-    phone: z.string().max(30),
+    phone: z.string().max(30).catch(''),
   })
   .refine((d) => d.openTime < d.closeTime, {
     message: 'La hora de cierre debe ser posterior a la apertura',
