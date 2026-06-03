@@ -4,9 +4,10 @@ export interface Closeout {
   id: string;
   barbershop_id: string;
   business_date: string;
-  gross_amount: number;
-  commission_amount: number;
-  net_amount: number;
+  gross_amount: number;       // Ingreso del local (servicios)
+  commission_amount: number;  // Comisión que va a los barberos
+  net_amount: number;         // gross - commission = lo que se queda el dueño
+  tips_amount: number;        // Propinas registradas (100% al barbero, pass-through)
   completed_count: number;
   no_show_count: number;
   cancelled_count: number;

@@ -61,9 +61,10 @@ test('client can complete the booking wizard end-to-end', async ({ page }) => {
   await expect(slotButtons.first()).toBeVisible({ timeout: 20_000 });
   await slotButtons.first().click();
 
-  // Step 4: fill name and confirm
+  // Step 4: fill name + phone (now required) and confirm
   await expect(page.getByRole('heading', { name: 'Confirmar reserva' })).toBeVisible({ timeout: 5_000 });
   await page.getByPlaceholder('Ej: Carla Rodríguez').fill(clientName);
+  await page.getByPlaceholder(/\+56/).fill('+56912345678');
   await page.getByRole('button', { name: 'Confirmar reserva' }).click();
 
   // Success screen

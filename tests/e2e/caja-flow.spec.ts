@@ -131,9 +131,10 @@ test('admin can close the day and see the immutable summary', async ({ page }) =
   // Immutable summary fields appear inside the closed panel (green card)
   // Scope to the card that contains "Día cerrado" to avoid strict mode violations
   const closedCard = page.locator('.border-green-500').first();
-  await expect(closedCard.getByText('Total cobrado')).toBeVisible();
+  await expect(closedCard.getByText('Ingreso del local')).toBeVisible();
   await expect(closedCard.getByText('Comisiones')).toBeVisible();
-  await expect(closedCard.getByText('Neto local')).toBeVisible();
+  await expect(closedCard.getByText('Neto del dueño')).toBeVisible();
+  await expect(closedCard.getByText('Propinas (barberos)')).toBeVisible();
 
   // The "Cerrar día" button is gone
   await expect(page.getByRole('button', { name: 'Cerrar día' })).not.toBeVisible();

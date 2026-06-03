@@ -41,10 +41,18 @@ if (!process.env.SUPABASE_DB_URL) {
 }
 
 const BARBERS = [
-  { name: 'Diego Soto', chair: 'Silla 1', commission: 45 },
-  { name: 'Andrés Pérez', chair: 'Silla 2', commission: 40 },
-  { name: 'Felipe Muñoz', chair: 'Silla 3', commission: 40 },
+  { name: 'Diego Soto',   chair: 'Silla 1', commission: 45, level: 'Senior' },
+  { name: 'Andrés Pérez', chair: 'Silla 2', commission: 40, level: 'Estilista' },
+  { name: 'Felipe Muñoz', chair: 'Silla 3', commission: 35, level: 'Junior' },
 ];
+
+// Per-barber price multipliers — Senior charges more, Junior charges less.
+// Applied to the service's base price when seeding overrides.
+const BARBER_PRICE_MULTIPLIER = {
+  Senior: 1.25,
+  Estilista: 1.0,
+  Junior: 0.85,
+};
 
 const SERVICES = [
   { name: 'Corte clásico', category: 'Corte', minutes: 30, price: 12000, commission: 40 },
@@ -86,18 +94,20 @@ try {
   }
   console.log(`✔ Barbería encontrada: ${shopId}`);
 
-  // 2. Insert barbers
+  // 2. Insert barbers (with experience_level)
   const barberIds = [];
+  const barberLevels = [];
   for (const b of BARBERS) {
     const r = await client.query(
-      `INSERT INTO public.barbers (barbershop_id, full_name, chair_label, commission_default, active)
-       VALUES ($1, $2, $3, $4, TRUE)
+      `INSERT INTO public.barbers (barbershop_id, full_name, chair_label, commission_default, experience_level, active)
+       VALUES ($1, $2, $3, $4, $5, TRUE)
        RETURNING id`,
-      [shopId, b.name, b.chair, b.commission],
+      [shopId, b.name, b.chair, b.commission, b.level],
     );
     barberIds.push(r.rows[0].id);
+    barberLevels.push(b.level);
   }
-  console.log(`✔ ${BARBERS.length} barberos insertados`);
+  console.log(`✔ ${BARBERS.length} barberos insertados (Senior · Estilista · Junior)`);
 
   // 3. Insert services
   const serviceIds = [];
@@ -124,18 +134,26 @@ try {
   }
   console.log(`✔ ${SERVICES.length} servicios listos`);
 
-  // 4. Link every barber to every service
-  for (const bid of barberIds) {
-    for (const sid of serviceIds) {
+  // 4. Link every barber to every service WITH per-barber price overrides
+  for (let bi = 0; bi < barberIds.length; bi++) {
+    const bid = barberIds[bi];
+    const level = barberLevels[bi];
+    const multiplier = BARBER_PRICE_MULTIPLIER[level] ?? 1.0;
+    for (let si = 0; si < serviceIds.length; si++) {
+      const sid = serviceIds[si];
+      const svc = SERVICES[si];
+      // Round to nearest 500 for cleaner CLP amounts
+      const customPrice = Math.round((svc.price * multiplier) / 500) * 500;
       await client.query(
-        `INSERT INTO public.barber_services (barbershop_id, barber_id, service_id)
-         VALUES ($1, $2, $3)
+        `INSERT INTO public.barber_services
+           (barbershop_id, barber_id, service_id, price_amount, commission_percent)
+         VALUES ($1, $2, $3, $4, NULL)
          ON CONFLICT DO NOTHING`,
-        [shopId, bid, sid],
+        [shopId, bid, sid, customPrice],
       );
     }
   }
-  console.log(`✔ Servicios asignados a todos los barberos`);
+  console.log(`✔ Servicios asignados con precios overrideados (Senior +25%, Junior -15%)`);
 
   // 5. Insert clients
   const clientIds = [];

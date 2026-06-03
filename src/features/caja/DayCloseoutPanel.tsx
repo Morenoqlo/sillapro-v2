@@ -35,9 +35,9 @@ export function DayCloseoutPanel({ date }: DayCloseoutPanelProps) {
             </p>
           </div>
         </div>
-        <div className="mt-3 grid grid-cols-2 gap-x-6 gap-y-1 text-xs md:grid-cols-4">
+        <div className="mt-3 grid grid-cols-2 gap-x-6 gap-y-1 text-xs md:grid-cols-5">
           <div>
-            <span className="text-gray-500">Total cobrado</span>
+            <span className="text-gray-500">Ingreso del local</span>
             <p className="font-semibold text-gray-900">{formatCLP(closeout.gross_amount)}</p>
           </div>
           <div>
@@ -45,8 +45,12 @@ export function DayCloseoutPanel({ date }: DayCloseoutPanelProps) {
             <p className="font-semibold text-gray-900">{formatCLP(closeout.commission_amount)}</p>
           </div>
           <div>
-            <span className="text-gray-500">Neto local</span>
-            <p className="font-semibold text-gray-900">{formatCLP(closeout.net_amount)}</p>
+            <span className="text-gray-500">Neto del dueño</span>
+            <p className="font-semibold text-brand">{formatCLP(closeout.net_amount)}</p>
+          </div>
+          <div>
+            <span className="text-green-700">Propinas (barberos)</span>
+            <p className="font-semibold text-green-700">{formatCLP(closeout.tips_amount)}</p>
           </div>
           <div>
             <span className="text-gray-500">Citas</span>
