@@ -27,8 +27,11 @@ export function StepFechaHora({ shop, booking, onUpdate, onNext, onBack }: Props
   const today = todayBusinessDate();
   const [selectedDate, setSelectedDate] = useState(booking.date || today);
 
+  const isClosed = (date: string) => shop.closedDates.includes(date);
+  const selectedIsClosed = isClosed(selectedDate);
+
   const slotsQuery = usePublicSlots(
-    booking.barber && booking.service
+    booking.barber && booking.service && !selectedIsClosed
       ? {
           shopId: shop.id,
           barberId: booking.barber.id,
@@ -57,6 +60,7 @@ export function StepFechaHora({ shop, booking, onUpdate, onNext, onBack }: Props
           const dowLabel = DAY_LABELS_SHORT[dt.getUTCDay()] ?? '';
           const dayNum = String(dt.getUTCDate()).padStart(2, '0');
           const isSelected = d === selectedDate;
+          const closed = isClosed(d);
           return (
             <button
               key={d}
@@ -64,25 +68,33 @@ export function StepFechaHora({ shop, booking, onUpdate, onNext, onBack }: Props
               onClick={() => setSelectedDate(d)}
               className={cn(
                 'flex min-w-[52px] flex-col items-center rounded-lg border px-2 py-2 text-xs transition-colors',
-                isSelected
-                  ? 'border-brand bg-brand text-white'
-                  : 'border-gray-200 text-gray-700 hover:border-brand/50',
+                closed && !isSelected && 'border-dashed border-red-200 bg-red-50 text-red-400',
+                !closed && isSelected && 'border-brand bg-brand text-white',
+                closed && isSelected && 'border-red-400 bg-red-100 text-red-700',
+                !closed && !isSelected && 'border-gray-200 text-gray-700 hover:border-brand/50',
               )}
             >
               <span className="font-medium">{dowLabel}</span>
               <span className="text-base font-bold">{dayNum}</span>
+              {closed && <span className="mt-0.5 text-[10px] uppercase">Cerr.</span>}
             </button>
           );
         })}
       </div>
 
-      {slotsQuery.isLoading && (
+      {selectedIsClosed && (
+        <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+          🚫 El local está cerrado este día. Elige otra fecha.
+        </p>
+      )}
+
+      {!selectedIsClosed && slotsQuery.isLoading && (
         <p className="text-sm text-gray-500">Cargando horarios disponibles...</p>
       )}
-      {!slotsQuery.isLoading && (slotsQuery.data ?? []).length === 0 && (
+      {!selectedIsClosed && !slotsQuery.isLoading && (slotsQuery.data ?? []).length === 0 && (
         <p className="text-sm text-gray-400">Sin horarios disponibles para este día.</p>
       )}
-      <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
+      <div className={cn('grid grid-cols-3 gap-2 sm:grid-cols-4', selectedIsClosed && 'hidden')}>
         {(slotsQuery.data ?? []).map((slot) => {
           const t = formatTime(parseISOToDate(slot.starts_at));
           const isSelected = t === booking.time && selectedDate === booking.date;

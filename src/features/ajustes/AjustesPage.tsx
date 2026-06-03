@@ -8,6 +8,7 @@ import { Select } from '@/ui/Select';
 import { FormField } from '@/ui/FormField';
 import { useShopSettings, useUpdateShopSettings } from './hooks/useShopSettings';
 import { shopSettingsSchema, type ShopSettingsInput } from './schemas';
+import { ClosedDaysSection } from './ClosedDaysSection';
 
 const TIMEZONES = ['America/Santiago', 'America/Punta_Arenas', 'Pacific/Easter'];
 
@@ -143,17 +144,20 @@ export function AjustesPage() {
       {query.isLoading && <p className="text-sm text-gray-500">Cargando ajustes...</p>}
 
       {query.data && (
-        <AjustesForm
-          initial={{
-            name: query.data.name,
-            slug: query.data.slug,
-            timezone: query.data.timezone,
-            openTime: query.data.open_time,
-            closeTime: query.data.close_time,
-            slotMinutes: query.data.slot_minutes,
-            phone: query.data.phone,
-          }}
-        />
+        <div className="space-y-6">
+          <AjustesForm
+            initial={{
+              name: query.data.name,
+              slug: query.data.slug,
+              timezone: query.data.timezone,
+              openTime: query.data.open_time,
+              closeTime: query.data.close_time,
+              slotMinutes: query.data.slot_minutes,
+              phone: query.data.phone,
+            }}
+          />
+          <ClosedDaysSection />
+        </div>
       )}
     </div>
   );

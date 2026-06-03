@@ -7,7 +7,7 @@ import { StepServicio } from './steps/StepServicio';
 import { StepBarbero } from './steps/StepBarbero';
 import { StepFechaHora } from './steps/StepFechaHora';
 import { StepConfirmar } from './steps/StepConfirmar';
-import type { BookingState } from './types';
+import { type BookingState, priceForBarberService } from './types';
 
 type Step = 'servicio' | 'barbero' | 'fecha' | 'confirmar' | 'done';
 
@@ -37,6 +37,8 @@ const INITIAL_BOOKING: BookingState = {
   time: '',
   clientName: '',
   clientPhone: '',
+  clientEmail: '',
+  saveAsClient: true,
 };
 
 export function ReservaPage() {
@@ -76,7 +78,7 @@ export function ReservaPage() {
       `Servicio: ${booking.service.name}\n` +
       `Barbero: ${booking.barber.full_name}\n` +
       `Fecha: ${formatDateLong(starts)} a las ${formatTime(starts)}\n` +
-      `Precio: ${formatCLP(booking.service.price_amount)}\n` +
+      `Precio: ${formatCLP(priceForBarberService(shop, booking.barber, booking.service))}\n` +
       (booking.clientPhone ? `Teléfono: ${booking.clientPhone}` : ''),
     );
     const ownerWaText = encodeURIComponent(
@@ -85,7 +87,7 @@ export function ReservaPage() {
       `Servicio: ${booking.service?.name ?? ''}\n` +
       `Barbero: ${booking.barber?.full_name ?? ''}\n` +
       `${starts ? `Fecha: ${formatDateLong(starts)} a las ${formatTime(starts)}` : ''}\n` +
-      `Precio: ${booking.service ? formatCLP(booking.service.price_amount) : ''}`,
+      `Precio: ${booking.service ? formatCLP(priceForBarberService(shop, booking.barber, booking.service)) : ''}`,
     );
     return (
       <div className="flex min-h-screen items-center justify-center px-4">
@@ -174,6 +176,7 @@ export function ReservaPage() {
             booking={booking}
             onBack={() => setStep('fecha')}
             onDone={(_id) => setStep('done')}
+            onUpdate={update}
           />
         )}
       </main>

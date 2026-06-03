@@ -30,11 +30,26 @@ export function usePublicShop(slug: string | undefined) {
 
       const { data: barbers, error: bErr } = await supabase
         .from('barbers')
-        .select('id, full_name')
+        .select('id, full_name, experience_level')
         .eq('barbershop_id', (shop as unknown as { id: string }).id)
         .eq('active', true)
         .order('full_name');
       if (bErr) throw bErr;
+
+      const { data: overrides, error: oErr } = await supabase
+        .from('barber_services')
+        .select('barber_id, service_id, price_amount, commission_percent')
+        .eq('barbershop_id', (shop as unknown as { id: string }).id);
+      if (oErr) throw oErr;
+
+      // Closed days from today onward
+      const today = new Date().toISOString().slice(0, 10);
+      const { data: closed, error: cdErr } = await supabase
+        .from('closed_days')
+        .select('closed_date')
+        .eq('barbershop_id', (shop as unknown as { id: string }).id)
+        .gte('closed_date', today);
+      if (cdErr) throw cdErr;
 
       const raw = shop as unknown as {
         id: string; name: string; slug: string; timezone: string;
@@ -46,6 +61,10 @@ export function usePublicShop(slug: string | undefined) {
         close_time: raw.close_time.slice(0, 5),
         services: (services ?? []) as unknown as PublicShop['services'],
         barbers: (barbers ?? []) as unknown as PublicShop['barbers'],
+        barberServices: (overrides ?? []) as unknown as PublicShop['barberServices'],
+        closedDates: (closed ?? []).map(
+          (c) => (c as { closed_date: string }).closed_date,
+        ),
       };
     },
     enabled: !!slug,

@@ -28,9 +28,9 @@ export function ShopStep({ defaultValues, onSubmit }: ShopStepProps) {
     resolver: zodResolver(shopSchema),
     defaultValues: {
       timezone: 'America/Santiago',
-      openTime: '09:00',
-      closeTime: '20:00',
-      slotMinutes: 30,
+      openTime: '10:00',
+      closeTime: '18:00',
+      slotMinutes: 45,
       slug: null,
       ...defaultValues,
     },
