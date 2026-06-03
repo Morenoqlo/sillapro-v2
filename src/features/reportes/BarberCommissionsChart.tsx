@@ -57,13 +57,18 @@ export function BarberCommissionsChart({ data }: BarberCommissionsChartProps) {
           <Tooltip
             formatter={(v, name) => [
               formatCLP(Number(v)),
-              name === 'commission' ? 'Comisión' : 'Facturado',
+              name === 'commission' ? 'Comisión' : name === 'tips' ? 'Propinas' : 'Facturado',
             ] as [string, string]}
             contentStyle={{ borderRadius: 6, border: '1px solid #e5e7eb', fontSize: 12 }}
           />
-          <Bar dataKey="commission" fill="#B45309" radius={[0, 3, 3, 0]} name="commission" />
+          <Bar dataKey="commission" stackId="earn" fill="#B45309" radius={[0, 0, 0, 0]} name="commission" />
+          <Bar dataKey="tips" stackId="earn" fill="#16A34A" radius={[0, 3, 3, 0]} name="tips" />
         </BarChart>
       </ResponsiveContainer>
+      <p className="mt-2 text-xs text-gray-500">
+        <span className="mr-3"><span className="mr-1 inline-block h-2 w-2 rounded-sm align-middle" style={{ background: '#B45309' }} /> Comisión</span>
+        <span><span className="mr-1 inline-block h-2 w-2 rounded-sm align-middle" style={{ background: '#16A34A' }} /> Propinas</span>
+      </p>
     </Card>
   );
 }

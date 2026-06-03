@@ -46,20 +46,32 @@ function buildReportData(
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([date, revenue]) => ({ date, revenue }));
 
-  // Barber commissions from completed appointments
-  const barberMap: Record<string, { name: string; commission: number; revenue: number }> = {};
+  // Map payment.appointment_id → tip_amount (sum) to attribute tips per barber
+  const tipByAppointment: Record<string, number> = {};
+  for (const p of payments) {
+    const t = Number(p.tip_amount) || 0;
+    if (t === 0) continue;
+    tipByAppointment[p.appointment_id] = (tipByAppointment[p.appointment_id] ?? 0) + t;
+  }
+
+  // Barber commissions from completed appointments, plus tips
+  const barberMap: Record<
+    string,
+    { name: string; commission: number; revenue: number; tips: number }
+  > = {};
   for (const a of appointments) {
     if (a.status !== 'completed') continue;
     const name = a.barber?.full_name ?? 'Desconocido';
     const id = a.barber_id;
-    if (!barberMap[id]) barberMap[id] = { name, commission: 0, revenue: 0 };
+    if (!barberMap[id]) barberMap[id] = { name, commission: 0, revenue: 0, tips: 0 };
     barberMap[id]!.revenue += Number(a.price_amount);
     barberMap[id]!.commission += Math.round(
       (Number(a.price_amount) * Number(a.commission_percent)) / 100,
     );
+    barberMap[id]!.tips += tipByAppointment[a.id] ?? 0;
   }
   const barberCommissions = Object.values(barberMap).sort(
-    (a, b) => b.commission - a.commission,
+    (a, b) => b.commission + b.tips - (a.commission + a.tips),
   );
 
   // Top services by revenue
@@ -90,10 +102,8 @@ function buildReportData(
     .sort((a, b) => b.visits - a.visits)
     .slice(0, 10);
 
-  const totalRevenue = payments.reduce(
-    (s, p) => s + Number(p.amount) + Number(p.tip_amount),
-    0,
-  );
+  const totalRevenue = payments.reduce((s, p) => s + Number(p.amount), 0);
+  const totalTips = payments.reduce((s, p) => s + Number(p.tip_amount), 0);
   const totalCommissions = barberCommissions.reduce((s, b) => s + b.commission, 0);
   const totalAppointments = appointments.filter((a) => a.status === 'completed').length;
 
@@ -104,6 +114,7 @@ function buildReportData(
     frequentClients,
     totalRevenue,
     totalCommissions,
+    totalTips,
     totalAppointments,
   };
 }

@@ -5,4 +5,6 @@ export interface Barber {
   chair_label: string;
   commission_default: number;
   active: boolean;
+  /** Free-text level shown in profile and public reservation. "" if unset. */
+  experience_level: string;
 }

@@ -7,6 +7,7 @@ export interface BarberCommission {
   name: string;
   commission: number;
   revenue: number;
+  tips: number;
 }
 
 export interface TopService {
@@ -28,6 +29,7 @@ export interface ReportData {
   frequentClients: FrequentClient[];
   totalRevenue: number;
   totalCommissions: number;
+  totalTips: number;
   totalAppointments: number;
 }
 

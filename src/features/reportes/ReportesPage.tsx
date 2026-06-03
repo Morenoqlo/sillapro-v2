@@ -28,9 +28,9 @@ export function ReportesPage() {
 
       {!isLoading && data && (
         <>
-          <div className="mb-4 grid grid-cols-3 gap-3">
+          <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
             <Card>
-              <p className="text-xs uppercase tracking-wide text-gray-500">Total ingresos</p>
+              <p className="text-xs uppercase tracking-wide text-gray-500">Ingresos del local</p>
               <p className="mt-1 text-xl font-bold text-gray-900">
                 {formatCLP(data.totalRevenue)}
               </p>
@@ -40,6 +40,13 @@ export function ReportesPage() {
               <p className="mt-1 text-xl font-bold text-gray-900">
                 {formatCLP(data.totalCommissions)}
               </p>
+            </Card>
+            <Card>
+              <p className="text-xs uppercase tracking-wide text-gray-500">Propinas</p>
+              <p className="mt-1 text-xl font-bold text-green-700">
+                {formatCLP(data.totalTips)}
+              </p>
+              <p className="text-[10px] text-gray-400">Para los barberos</p>
             </Card>
             <Card>
               <p className="text-xs uppercase tracking-wide text-gray-500">Citas completadas</p>

@@ -38,8 +38,21 @@ export function MisComisionesPage() {
             {formatCLP(stats?.barberCommission ?? 0)}
           </p>
         </Card>
+        <Card>
+          <p className="text-xs uppercase tracking-wide text-gray-500">Mis propinas</p>
+          <p className="mt-1 text-2xl font-bold text-green-700">
+            {formatCLP(stats?.barberTips ?? 0)}
+          </p>
+        </Card>
+        <Card>
+          <p className="text-xs uppercase tracking-wide text-gray-500">Total para ti</p>
+          <p className="mt-1 text-2xl font-bold text-brand">
+            {formatCLP((stats?.barberCommission ?? 0) + (stats?.barberTips ?? 0))}
+          </p>
+          <p className="text-[10px] text-gray-400">Comisión + propinas</p>
+        </Card>
         <Card className="col-span-2">
-          <p className="text-xs uppercase tracking-wide text-gray-500">Facturado</p>
+          <p className="text-xs uppercase tracking-wide text-gray-500">Facturado por el local</p>
           <p className="mt-1 text-xl font-semibold text-gray-900">
             {formatCLP(stats?.grossRevenue ?? 0)}
           </p>

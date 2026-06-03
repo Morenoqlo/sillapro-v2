@@ -110,7 +110,10 @@ export function ChargeAppointmentModal({
         </div>
       </FormField>
 
-      <FormField label="Propina (opcional)" htmlFor="tip">
+      <FormField
+        label={`Propina para ${appointment.barber?.full_name ?? 'el barbero'} (opcional)`}
+        htmlFor="tip"
+      >
         <div id="tip" className="grid grid-cols-5 gap-1.5">
           {TIP_PRESETS.map((p) => (
             <button
