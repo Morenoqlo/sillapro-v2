@@ -33,7 +33,7 @@ test('reportes page renders with range toggle and summary KPIs', async ({ page }
   await expect(page.getByRole('button', { name: 'Últimos 30 días' })).toBeVisible();
 
   // KPI cards
-  await expect(page.getByText('Total ingresos')).toBeVisible({ timeout: 10_000 });
+  await expect(page.getByText('Ingresos del local')).toBeVisible({ timeout: 10_000 });
   await expect(page.getByText('Comisiones', { exact: true })).toBeVisible();
   await expect(page.getByText('Citas completadas')).toBeVisible();
 
@@ -48,20 +48,20 @@ test('range toggle switches period without errors', async ({ page }) => {
   await login(page);
   await page.getByRole('link', { name: 'Reportes' }).click();
   await expect(page).toHaveURL(/\/admin\/reportes/);
-  await expect(page.getByText('Total ingresos')).toBeVisible({ timeout: 10_000 });
+  await expect(page.getByText('Ingresos del local')).toBeVisible({ timeout: 10_000 });
 
   // Switch to Este mes
   await page.getByRole('button', { name: 'Este mes' }).click();
   await page.waitForLoadState('networkidle');
-  await expect(page.getByText('Total ingresos')).toBeVisible();
+  await expect(page.getByText('Ingresos del local')).toBeVisible();
 
   // Switch to Últimos 30 días
   await page.getByRole('button', { name: 'Últimos 30 días' }).click();
   await page.waitForLoadState('networkidle');
-  await expect(page.getByText('Total ingresos')).toBeVisible();
+  await expect(page.getByText('Ingresos del local')).toBeVisible();
 
   // Switch back to Esta semana
   await page.getByRole('button', { name: 'Esta semana' }).click();
   await page.waitForLoadState('networkidle');
-  await expect(page.getByText('Total ingresos')).toBeVisible();
+  await expect(page.getByText('Ingresos del local')).toBeVisible();
 });

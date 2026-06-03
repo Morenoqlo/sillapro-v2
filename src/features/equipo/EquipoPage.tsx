@@ -75,7 +75,16 @@ export function EquipoPage() {
             <tbody>
               {barbers.map((b) => (
                 <tr key={b.id} className="border-b border-gray-100 last:border-0">
-                  <td className="px-4 py-2 font-medium text-gray-900">{b.full_name}</td>
+                  <td className="px-4 py-2 font-medium text-gray-900">
+                    <div className="flex items-center gap-2">
+                      <span>{b.full_name}</span>
+                      {b.experience_level && (
+                        <span className="inline-block rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-brand-accent">
+                          {b.experience_level}
+                        </span>
+                      )}
+                    </div>
+                  </td>
                   <td className="px-4 py-2 text-gray-600">{b.chair_label}</td>
                   <td className="px-4 py-2 text-gray-600">{b.commission_default}%</td>
                   <td className="px-4 py-2">
