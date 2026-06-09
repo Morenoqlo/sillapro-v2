@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
+import { authErrorToSpanish } from '@/lib/auth-errors';
 
 interface InviteInfo {
   barbershop: { name: string } | null;
@@ -78,7 +79,7 @@ export function UnirsePage() {
 
     const { error: signUpErr } = await supabase.auth.signUp({ email, password });
     if (signUpErr) {
-      setFormError(signUpErr.message);
+      setFormError(authErrorToSpanish(signUpErr));
       setSubmitting(false);
       return;
     }
@@ -92,7 +93,7 @@ export function UnirsePage() {
 
     const { error: acceptErr } = await supabase.rpc('accept_barber_invite', { p_token: token });
     if (acceptErr) {
-      setFormError(acceptErr.message);
+      setFormError(authErrorToSpanish(acceptErr));
       setSubmitting(false);
       return;
     }

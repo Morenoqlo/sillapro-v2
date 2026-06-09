@@ -5,6 +5,7 @@ import { Button } from '@/ui/Button';
 import { Card } from '@/ui/Card';
 import { EmptyState } from '@/ui/EmptyState';
 import { StatusBadge } from '@/ui/StatusBadge';
+import { TableSkeleton } from '@/ui/Skeleton';
 import { ConfirmDialog } from '@/ui/ConfirmDialog';
 import { BarberModal } from './BarberModal';
 import { useBarbers, useBarberMutations } from './hooks/useBarbers';
@@ -50,7 +51,7 @@ export function EquipoPage() {
         <Button onClick={openCreate}>+ Barbero</Button>
       </div>
 
-      {list.isLoading && <p className="text-sm text-gray-500">Cargando...</p>}
+      {list.isLoading && <TableSkeleton rows={4} cols={4} />}
 
       {!list.isLoading && barbers.length === 0 && (
         <EmptyState

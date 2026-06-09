@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { supabase } from '@/lib/supabase';
+import { authErrorToSpanish } from '@/lib/auth-errors';
 import { Button } from '@/ui/Button';
 import { Input } from '@/ui/Input';
 import { FormField } from '@/ui/FormField';
@@ -32,7 +33,7 @@ export function RegisterPage() {
     });
     setSubmitting(false);
     if (error) {
-      toast.error(error.message);
+      toast.error(authErrorToSpanish(error));
       return;
     }
     if (data.session) {

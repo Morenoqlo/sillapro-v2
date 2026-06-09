@@ -5,6 +5,7 @@ import { Card } from '@/ui/Card';
 import { EmptyState } from '@/ui/EmptyState';
 import { StatusBadge } from '@/ui/StatusBadge';
 import { ConfirmDialog } from '@/ui/ConfirmDialog';
+import { TableSkeleton } from '@/ui/Skeleton';
 import { formatCLP } from '@/lib/money';
 import { ServiceModal } from './ServiceModal';
 import { useServices, useServiceMutations } from './hooks/useServices';
@@ -50,7 +51,7 @@ export function ServiciosPage() {
         <Button onClick={openCreate}>+ Servicio</Button>
       </div>
 
-      {list.isLoading && <p className="text-sm text-gray-500">Cargando...</p>}
+      {list.isLoading && <TableSkeleton rows={4} cols={4} />}
 
       {!list.isLoading && services.length === 0 && (
         <EmptyState

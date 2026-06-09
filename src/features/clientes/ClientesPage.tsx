@@ -6,6 +6,7 @@ import { Card } from '@/ui/Card';
 import { Input } from '@/ui/Input';
 import { EmptyState } from '@/ui/EmptyState';
 import { StatusBadge } from '@/ui/StatusBadge';
+import { TableSkeleton } from '@/ui/Skeleton';
 import { ClientModal } from './ClientModal';
 import { useClients, useClientMutations } from './hooks/useClients';
 import type { Client, ClientStatus } from './types';
@@ -62,7 +63,7 @@ export function ClientesPage() {
         />
       </div>
 
-      {list.isLoading && <p className="text-sm text-gray-500">Cargando...</p>}
+      {list.isLoading && <TableSkeleton rows={6} cols={4} />}
 
       {!list.isLoading && clients.length === 0 && (
         <EmptyState
