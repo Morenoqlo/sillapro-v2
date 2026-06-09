@@ -131,10 +131,19 @@ test.describe('RLS multi-tenant isolation', () => {
     const client = anonClientForUser();
     // sin signIn
 
+    // barbershops: anon tiene GRANT SELECT + RLS policy barbershops_public_select
+    // que sólo permite shops con slug. Sin slug → 0 rows.
     const { data: shops } = await client.from('barbershops').select('id');
     expect(shops).toHaveLength(0);
 
-    const { data: clients } = await client.from('clients').select('id');
-    expect(clients).toHaveLength(0);
+    // clients: tras migration 016 anon no tiene GRANT SELECT en clients;
+    // la query falla con permiso denegado (data:null) en vez de devolver [].
+    // Aceptamos cualquiera de los dos: "sin filas" o "permiso denegado".
+    const { data: clients, error: cErr } = await client.from('clients').select('id');
+    expect(cErr !== null || (Array.isArray(clients) && clients.length === 0)).toBe(true);
+
+    // appointments: tras migration 014 + 016 anon tampoco puede leer.
+    const { data: appts, error: aErr } = await client.from('appointments').select('id');
+    expect(aErr !== null || (Array.isArray(appts) && appts.length === 0)).toBe(true);
   });
 });

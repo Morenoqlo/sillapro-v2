@@ -4,6 +4,13 @@ import { useTenant } from '@/hooks/useTenant';
 import type { Client, ClientStatus } from '../types';
 import type { ClientFormInput } from '../schemas';
 
+/**
+ * Hard cap to avoid pulling 10k+ rows into the browser. Tested as
+ * generous-enough for small barbershops (1-3 chairs, <1y of clients).
+ * Beyond this, the search box drives filtering server-side.
+ */
+export const CLIENTS_MAX = 200;
+
 export function useClients(search: string) {
   const { data: tenant } = useTenant();
   const barbershopId = tenant?.barbershop_id;
@@ -13,11 +20,15 @@ export function useClients(search: string) {
     queryFn: async (): Promise<Client[]> => {
       let query = supabase
         .from('clients')
-        .select('*')
+        .select('id, barbershop_id, full_name, phone, email, notes, status, created_at, updated_at')
         .eq('barbershop_id', barbershopId!)
-        .order('full_name');
+        .order('full_name')
+        .limit(CLIENTS_MAX);
       if (search.trim()) {
-        query = query.or(`full_name.ilike.%${search}%,phone.ilike.%${search}%`);
+        // Escape % and _ to avoid wildcard injection. (Already authed
+        // RLS-protected but better to keep the literal search.)
+        const escaped = search.replace(/[\\%_]/g, (m) => `\\${m}`);
+        query = query.or(`full_name.ilike.%${escaped}%,phone.ilike.%${escaped}%`);
       }
       const { data, error } = await query;
       if (error) throw error;
