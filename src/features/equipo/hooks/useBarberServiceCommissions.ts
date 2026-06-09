@@ -20,7 +20,7 @@ export function useBarberServiceCommissions(barberId: string) {
     queryFn: async (): Promise<ServiceWithCommission[]> => {
       const { data: services, error: sErr } = await supabase
         .from('services')
-        .select('*')
+        .select('id, barbershop_id, name, category, duration_minutes, price_amount, commission_percent, active')
         .eq('barbershop_id', barbershopId!)
         .eq('active', true)
         .order('name');

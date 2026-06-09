@@ -38,8 +38,9 @@ export function useCreateInitialShop() {
           .update({ slug: input.shop.slug })
           .eq('id', barbershopId);
         if (slugErr) {
-          // Slug uniqueness conflict → user can set it in Ajustes later
-          console.warn('Slug conflict during onboarding:', slugErr.message);
+          // Slug uniqueness conflict → user can set a different one in Ajustes.
+          // Intentionally swallow: the shop+barber+service were created, only
+          // the public URL alias was rejected. No leak via console.
         }
       }
 

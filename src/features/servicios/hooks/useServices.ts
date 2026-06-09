@@ -13,7 +13,7 @@ export function useServices() {
     queryFn: async (): Promise<Service[]> => {
       const { data, error } = await supabase
         .from('services')
-        .select('*')
+        .select('id, barbershop_id, name, category, duration_minutes, price_amount, commission_percent, active')
         .eq('barbershop_id', barbershopId!)
         .order('name');
       if (error) throw error;

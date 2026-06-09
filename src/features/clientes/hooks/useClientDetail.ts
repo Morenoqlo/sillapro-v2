@@ -12,7 +12,7 @@ export function useClientDetail(clientId: string) {
     queryFn: async (): Promise<Client | null> => {
       const { data, error } = await supabase
         .from('clients')
-        .select('*')
+        .select('id, barbershop_id, full_name, phone, email, notes, status, created_at, updated_at')
         .eq('id', clientId)
         .eq('barbershop_id', barbershopId!)
         .maybeSingle();
