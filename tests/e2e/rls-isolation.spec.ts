@@ -132,8 +132,14 @@ test.describe('RLS multi-tenant isolation', () => {
     // sin signIn
 
     // barbershops: anon tiene GRANT SELECT + RLS policy barbershops_public_select
-    // que sólo permite shops con slug. Sin slug → 0 rows.
-    const { data: shops } = await client.from('barbershops').select('id');
+    // que sólo permite shops con slug. Los shops del test no tienen slug →
+    // no deberían aparecer aunque otros shops (demo, prod) sí los tengan.
+    // Filtramos explícitamente por los IDs del test para evitar test flaky
+    // dependiente del estado global de la DB.
+    const { data: shops } = await client
+      .from('barbershops')
+      .select('id')
+      .in('id', [fixtures.shopAId!, fixtures.shopBId!]);
     expect(shops).toHaveLength(0);
 
     // clients: tras migration 016 anon no tiene GRANT SELECT en clients;

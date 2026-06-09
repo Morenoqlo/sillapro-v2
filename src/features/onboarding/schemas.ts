@@ -19,7 +19,10 @@ export const shopSchema = z
         z.undefined(),
         z
           .string()
-          .regex(/^[a-z0-9-]+$/, 'Solo letras minúsculas, números y guiones')
+          .regex(
+            /^[a-z0-9]+(-[a-z0-9]+)*$/,
+            'Solo minúsculas, números y guiones; sin guiones al inicio/fin ni dobles',
+          )
           .min(3)
           .max(50),
       ])

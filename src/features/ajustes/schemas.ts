@@ -1,14 +1,19 @@
 import { z } from 'zod';
 
 const timeRegex = /^([01]\d|2[0-3]):[0-5]\d$/;
-const slugRegex = /^[a-z0-9-]+$/;
+// No leading/trailing hyphen, no consecutive hyphens.
+// Must match migration 021's CHECK constraint on barbershops.slug.
+const slugRegex = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
 export const shopSettingsSchema = z
   .object({
     name: z.string().min(1, 'Requerido').max(80),
     slug: z
       .string()
-      .regex(slugRegex, 'Solo letras minúsculas, números y guiones')
+      .regex(
+        slugRegex,
+        'Solo minúsculas, números y guiones; sin guiones al inicio/fin ni dobles',
+      )
       .min(3, 'Mínimo 3 caracteres')
       .max(50)
       .nullable(),
