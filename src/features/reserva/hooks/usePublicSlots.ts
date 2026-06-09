@@ -22,13 +22,15 @@ export function usePublicSlots(params: UsePublicSlotsParams | null) {
       const dayStart = new Date(`${date}T00:00:00-04:00`).toISOString();
       const dayEnd   = new Date(`${date}T24:00:00-04:00`).toISOString();
 
-      const { data: booked, error } = await supabase
-        .from('appointments')
-        .select('starts_at, ends_at')
-        .eq('barbershop_id', shopId)
-        .eq('barber_id', barberId)
-        .gte('starts_at', dayStart)
-        .lt('starts_at', dayEnd);
+      // Uses get_public_busy_slots RPC (SECURITY DEFINER, validates shop has
+      // public slug). The old direct table read of `appointments` was an open
+      // scrape vector — RLS no longer allows anon SELECT on appointments.
+      const { data: booked, error } = await supabase.rpc('get_public_busy_slots', {
+        p_barbershop_id: shopId,
+        p_barber_id:     barberId,
+        p_range_start:   dayStart,
+        p_range_end:     dayEnd,
+      });
 
       if (error) throw error;
 

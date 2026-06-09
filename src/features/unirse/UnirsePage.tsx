@@ -28,17 +28,24 @@ export function UnirsePage() {
         setLoadingInvite(false);
         return;
       }
-      const { data, error } = await supabase
-        .from('barber_invites')
-        .select('barbershop:barbershops(name), barber:barbers(full_name)')
-        .eq('token', token)
-        .maybeSingle();
+      // Uses get_public_invite_info RPC (SECURITY DEFINER).
+      // The previous approach selected from `barber_invites` directly, which
+      // — combined with an over-permissive policy — let any anon enumerate
+      // every valid token in the system.
+      const { data, error } = await supabase.rpc('get_public_invite_info', {
+        p_token: token,
+      });
       setLoadingInvite(false);
-      if (error || !data) {
+      const row = Array.isArray(data) ? data[0] : data;
+      if (error || !row) {
         setInviteError('Invitación no válida o ya utilizada.');
         return;
       }
-      setInvite(data as unknown as InviteInfo);
+      const typed = row as { barbershop_name: string; barber_name: string };
+      setInvite({
+        barbershop: { name: typed.barbershop_name },
+        barber: { full_name: typed.barber_name },
+      });
     }
     void loadInvite();
   }, [token]);
