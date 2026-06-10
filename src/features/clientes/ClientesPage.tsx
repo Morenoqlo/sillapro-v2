@@ -56,7 +56,9 @@ export function ClientesPage() {
 
       <div className="mb-3">
         <Input
+          type="search"
           placeholder="🔍 Buscar por nombre o teléfono..."
+          aria-label="Buscar clientes por nombre o teléfono"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="max-w-xs"

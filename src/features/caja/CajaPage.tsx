@@ -1,10 +1,13 @@
 import { useState } from 'react';
+import { toast } from 'sonner';
+import { Button } from '@/ui/Button';
 import { todayBusinessDate, formatDateLong } from '@/lib/dates';
 import { DateRangeSelector, type RangePreset } from './DateRangeSelector';
 import { PaymentsSummaryCards } from './PaymentsSummaryCards';
 import { DayCloseoutPanel } from './DayCloseoutPanel';
 import { TodayPaymentsTable } from './TodayPaymentsTable';
 import { usePaymentsByRange } from './hooks/usePaymentsByRange';
+import { downloadPaymentsCSV } from './exportPaymentsCSV';
 
 export function CajaPage() {
   const today = todayBusinessDate();
@@ -54,12 +57,29 @@ export function CajaPage() {
         <PaymentsSummaryCards payments={payments} />
       </div>
 
-      <div className="mb-2">
+      <div className="mb-2 flex items-end justify-between">
         <p className="text-xs uppercase tracking-wide text-gray-500">
           Pagos{' '}
           {isSingleDay ? 'del día' : `del ${startDate} al ${endDate}`} (
           {payments.length})
         </p>
+        <Button
+          type="button"
+          variant="secondary"
+          size="sm"
+          disabled={payments.length === 0}
+          onClick={() => {
+            try {
+              downloadPaymentsCSV(payments, startDate, endDate);
+              toast.success('CSV descargado');
+            } catch (e) {
+              toast.error(e instanceof Error ? e.message : 'Error al exportar');
+            }
+          }}
+          aria-label="Exportar pagos del rango actual a CSV"
+        >
+          ⬇ Exportar CSV
+        </Button>
       </div>
       <TodayPaymentsTable payments={payments} isLoading={isLoading} />
     </div>

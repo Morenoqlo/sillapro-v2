@@ -35,7 +35,13 @@ function AdminHeaderActions() {
   const { setOpen: openPalette } = useCommandPalette();
   return (
     <div className="flex items-center gap-2">
-      <Button variant="tertiary" size="sm" onClick={() => openPalette(true)} title="Buscar (/)">
+      <Button
+        variant="tertiary"
+        size="sm"
+        onClick={() => openPalette(true)}
+        title="Buscar (/)"
+        aria-label="Abrir buscador"
+      >
         🔍
       </Button>
       <Button variant="primary" size="sm" onClick={() => openNewCita()}>
