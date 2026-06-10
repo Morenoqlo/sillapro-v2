@@ -3,6 +3,7 @@ import { Dialog } from '@/ui/Dialog';
 import { Button } from '@/ui/Button';
 import { EmptyState } from '@/ui/EmptyState';
 import { AppointmentStatusBadge } from '@/ui/AppointmentStatusBadge';
+import { ListSkeleton } from '@/ui/Skeleton';
 import { formatCLP } from '@/lib/money';
 import { formatTime, parseISOToDate, todayBusinessDate } from '@/lib/dates';
 import { useChargeableToday } from './hooks/useChargeableToday';
@@ -35,7 +36,7 @@ export function ChargeableListModal({ onClose }: ChargeableListModalProps) {
 
   return (
     <Dialog open onClose={onClose} title="Cobrar cita" maxWidth="max-w-lg">
-      {isLoading && <p className="text-sm text-gray-500">Cargando...</p>}
+      {isLoading && <ListSkeleton rows={3} />}
 
       {!isLoading && appts.length === 0 && (
         <EmptyState

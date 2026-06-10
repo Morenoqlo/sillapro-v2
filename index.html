@@ -31,6 +31,12 @@
       content="Agenda, cobros y reservas online. 14 días gratis."
     />
 
+    <!-- Performance: hint the browser to open the Supabase TLS connection in
+         parallel with the JS bundle download. Vite substitutes the env var
+         at build time so we don't hardcode the project ref. -->
+    <link rel="preconnect" href="%VITE_SUPABASE_URL%" crossorigin />
+    <link rel="dns-prefetch" href="%VITE_SUPABASE_URL%" />
+
     <!-- PWA + mobile -->
     <link rel="manifest" href="/manifest.webmanifest" />
     <meta name="theme-color" content="#0F172A" />

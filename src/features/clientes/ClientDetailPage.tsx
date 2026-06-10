@@ -8,6 +8,7 @@ import { formatCLP } from '@/lib/money';
 import { formatTime, formatDateLong, parseISOToDate } from '@/lib/dates';
 import { useClientDetail } from './hooks/useClientDetail';
 import { useClientAppointments } from './hooks/useClientAppointments';
+import { CardGridSkeleton, TableSkeleton } from '@/ui/Skeleton';
 
 const STATUS_LABEL = { active: 'Activo', inactive: 'Inactivo', blocked: 'Bloqueado' } as const;
 
@@ -18,7 +19,12 @@ export function ClientDetailPage() {
   const { data: appointments = [], isLoading: loadingAppts } = useClientAppointments(id);
 
   if (loadingClient) {
-    return <p className="text-sm text-gray-500">Cargando...</p>;
+    return (
+      <div className="space-y-4">
+        <CardGridSkeleton count={3} />
+        <TableSkeleton rows={4} cols={4} />
+      </div>
+    );
   }
   if (!client) {
     return (
@@ -91,7 +97,7 @@ export function ClientDetailPage() {
           Historial ({appointments.length} citas)
         </p>
       </div>
-      {loadingAppts && <p className="text-sm text-gray-500">Cargando historial...</p>}
+      {loadingAppts && <TableSkeleton rows={4} cols={4} />}
       {!loadingAppts && appointments.length === 0 && (
         <EmptyState title="Sin citas aún" description="Las citas de este cliente aparecerán aquí." />
       )}
