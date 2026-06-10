@@ -54,6 +54,7 @@ export function LoginPage() {
             type="email"
             autoComplete="email"
             placeholder="dueno@barberia.cl"
+            maxLength={100}
             {...register('email')}
           />
         </FormField>
@@ -62,6 +63,7 @@ export function LoginPage() {
             id="password"
             type="password"
             autoComplete="current-password"
+            maxLength={72}
             {...register('password')}
           />
         </FormField>

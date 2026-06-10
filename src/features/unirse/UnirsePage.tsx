@@ -146,6 +146,8 @@ export function UnirsePage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="tu@correo.cl"
+                maxLength={100}
+                autoComplete="email"
                 className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand/40"
               />
             </div>
@@ -156,6 +158,8 @@ export function UnirsePage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Mínimo 8 caracteres"
+                maxLength={72}
+                autoComplete="new-password"
                 className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand/40"
               />
             </div>

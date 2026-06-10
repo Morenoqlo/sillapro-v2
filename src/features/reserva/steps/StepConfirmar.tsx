@@ -110,6 +110,8 @@ export function StepConfirmar({ shop, booking, onBack, onDone, onUpdate }: Props
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Ej: Carla Rodríguez"
+            maxLength={80}
+            autoComplete="name"
             className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand/40"
           />
         </div>
@@ -122,6 +124,8 @@ export function StepConfirmar({ shop, booking, onBack, onDone, onUpdate }: Props
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="+56 9 8765 4321"
+            maxLength={30}
+            autoComplete="tel"
             className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand/40"
           />
         </div>
@@ -155,6 +159,8 @@ export function StepConfirmar({ shop, booking, onBack, onDone, onUpdate }: Props
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="tu@correo.cl"
+                maxLength={100}
+                autoComplete="email"
                 className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand/40"
               />
             </div>

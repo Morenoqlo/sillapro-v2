@@ -73,7 +73,13 @@ export function RegisterPage() {
     >
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <FormField label="Correo" htmlFor="email" error={errors.email?.message}>
-          <Input id="email" type="email" autoComplete="email" {...register('email')} />
+          <Input
+            id="email"
+            type="email"
+            autoComplete="email"
+            maxLength={100}
+            {...register('email')}
+          />
         </FormField>
         <FormField
           label="Contraseña"
@@ -85,6 +91,7 @@ export function RegisterPage() {
             id="password"
             type="password"
             autoComplete="new-password"
+            maxLength={72}
             {...register('password')}
           />
         </FormField>
