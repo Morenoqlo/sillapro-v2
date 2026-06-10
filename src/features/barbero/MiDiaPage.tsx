@@ -3,6 +3,7 @@ import { Card } from '@/ui/Card';
 import { Button } from '@/ui/Button';
 import { EmptyState } from '@/ui/EmptyState';
 import { AppointmentStatusBadge } from '@/ui/AppointmentStatusBadge';
+import { ListSkeleton } from '@/ui/Skeleton';
 import { formatCLP } from '@/lib/money';
 import { formatTime, parseISOToDate, todayBusinessDate, formatDateLong } from '@/lib/dates';
 import { useTenant } from '@/hooks/useTenant';
@@ -45,7 +46,7 @@ export function MiDiaPage() {
     }
   }
 
-  if (isLoading) return <p className="text-sm text-gray-500">Cargando agenda...</p>;
+  if (isLoading) return <ListSkeleton rows={4} />;
 
   return (
     <div>

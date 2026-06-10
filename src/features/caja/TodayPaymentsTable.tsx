@@ -1,5 +1,6 @@
 import { Card } from '@/ui/Card';
 import { EmptyState } from '@/ui/EmptyState';
+import { TableSkeleton } from '@/ui/Skeleton';
 import { formatCLP } from '@/lib/money';
 import { formatTime, parseISOToDate } from '@/lib/dates';
 import { METHOD_LABEL, type PaymentWithRefs } from '@/features/cobrar/types';
@@ -10,7 +11,7 @@ interface TodayPaymentsTableProps {
 }
 
 export function TodayPaymentsTable({ payments, isLoading }: TodayPaymentsTableProps) {
-  if (isLoading) return <p className="text-sm text-gray-500">Cargando...</p>;
+  if (isLoading) return <TableSkeleton rows={5} cols={5} />;
 
   if (payments.length === 0) {
     return (

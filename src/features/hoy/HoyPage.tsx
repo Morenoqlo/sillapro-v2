@@ -1,5 +1,6 @@
 import { todayBusinessDate, formatDateLong, parseISOToDate, minutesBetween } from '@/lib/dates';
 import { useDayAppointments } from '@/features/citas/hooks/useDayAppointments';
+import { CardGridSkeleton, ListSkeleton } from '@/ui/Skeleton';
 import { TodayAgendaList } from './TodayAgendaList';
 import { NextAppointmentCard } from './NextAppointmentCard';
 import { AttentionBanner } from './AttentionBanner';
@@ -28,7 +29,16 @@ export function HoyPage() {
         <p className="mt-1 text-sm text-gray-500">{formatDateLong(new Date())}</p>
       </div>
 
-      {isLoading && <p className="text-sm text-gray-500">Cargando agenda...</p>}
+      {isLoading && (
+        <div className="grid gap-4 lg:grid-cols-3">
+          <div className="space-y-4 lg:col-span-2">
+            <ListSkeleton rows={5} />
+          </div>
+          <div className="space-y-4">
+            <CardGridSkeleton count={4} />
+          </div>
+        </div>
+      )}
 
       {!isLoading && (
         <div className="grid gap-4 lg:grid-cols-3">

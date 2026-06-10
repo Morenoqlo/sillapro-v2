@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Card } from '@/ui/Card';
+import { CardGridSkeleton } from '@/ui/Skeleton';
 import { formatCLP } from '@/lib/money';
 import { RangeToggle } from './RangeToggle';
 import { DailyRevenueChart } from './DailyRevenueChart';
@@ -24,7 +25,12 @@ export function ReportesPage() {
         <RangeToggle value={range} onChange={setRange} />
       </div>
 
-      {isLoading && <p className="text-sm text-gray-500">Cargando datos...</p>}
+      {isLoading && (
+        <div className="space-y-4">
+          <CardGridSkeleton count={4} />
+          <CardGridSkeleton count={2} />
+        </div>
+      )}
 
       {!isLoading && data && (
         <>
